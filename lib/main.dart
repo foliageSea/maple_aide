@@ -1,8 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:maple_aide/helpers/hotkey_helper.dart';
 import 'package:maple_aide/pages/home/home_page.dart';
-import 'package:maple_aide/widgets/custom_app_web_view.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'global.dart';

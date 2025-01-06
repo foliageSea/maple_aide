@@ -1,8 +1,5 @@
-import 'dart:developer';
-
 import 'package:hotkey_system/hotkey_system.dart';
 import 'package:maple_aide/global.dart';
-import 'package:maple_aide/helpers/window_manager_helper.dart';
 
 class HotkeyHelper {
   static HotkeyHelper? _helper;
