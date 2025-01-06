@@ -1,0 +1,33 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:hotkey_system/hotkey_system.dart';
+
+class Global {
+  static WebViewEnvironment? webViewEnvironment;
+  static String userDataFolder = 'userData';
+
+  static Future initApp() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    await hotKeySystem.unregisterAll();
+
+    await _initWebView();
+  }
+
+  static Future _initWebView() async {
+    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.windows) {
+      final availableVersion = await WebViewEnvironment.getAvailableVersion();
+      assert(availableVersion != null,
+          'Failed to find an installed WebView2 runtime or non-stable Microsoft Edge installation.');
+
+      webViewEnvironment = await WebViewEnvironment.create(
+          settings: WebViewEnvironmentSettings(
+        additionalBrowserArguments: kDebugMode
+            ? '--enable-features=msEdgeDevToolsWdpRemoteDebugging'
+            : null,
+        userDataFolder: userDataFolder,
+      ));
+    }
+  }
+}
