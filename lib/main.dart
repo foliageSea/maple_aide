@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:maple_aide/helpers/hotkey_helper.dart';
-import 'package:maple_aide/widgets/in_app_webiew_example.screen.dart';
+import 'package:maple_aide/pages/home/home_page.dart';
+import 'package:maple_aide/widgets/custom_app_web_view.dart';
+import 'package:window_manager/window_manager.dart';
 
 import 'global.dart';
 
@@ -32,13 +34,19 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    final virtualWindowFrameBuilder = VirtualWindowFrameInit();
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: InAppWebViewExampleScreen(),
+      builder: (context, child) {
+        child = virtualWindowFrameBuilder(context, child);
+        return child;
+      },
+      home: const HomePage(),
     );
   }
 }

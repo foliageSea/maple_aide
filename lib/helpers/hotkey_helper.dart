@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:hotkey_system/hotkey_system.dart';
+import 'package:maple_aide/global.dart';
+import 'package:maple_aide/helpers/window_manager_helper.dart';
 
 class HotkeyHelper {
   static HotkeyHelper? _helper;
@@ -13,12 +15,12 @@ class HotkeyHelper {
 
   Map<HotKey, HotKeyHandler> hotkeys = {
     HotKey(
-      KeyCode.numpad1,
+      KeyCode.digit1,
       modifiers: [KeyModifier.control],
       scope: HotKeyScope.system,
     ): (hotKey) {
-      log('触发Ctrl+1');
-    }
+      Global.eventBus.fire(GlobalEvent(GlobalEventType.toggle));
+    },
   };
 
   Future register() async {

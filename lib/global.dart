@@ -1,11 +1,15 @@
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hotkey_system/hotkey_system.dart';
 
+import 'helpers/window_manager_helper.dart';
+
 class Global {
   static WebViewEnvironment? webViewEnvironment;
   static String userDataFolder = 'userData';
+  static EventBus eventBus = EventBus();
 
   static Future initApp() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -13,6 +17,10 @@ class Global {
     await hotKeySystem.unregisterAll();
 
     await _initWebView();
+
+    var windowManagerHelper = WindowManagerHelper();
+
+    await windowManagerHelper.ensureInitialized();
   }
 
   static Future _initWebView() async {
@@ -30,4 +38,16 @@ class Global {
       ));
     }
   }
+}
+
+class GlobalEvent {
+  late GlobalEventType type;
+
+  GlobalEvent(this.type);
+}
+
+enum GlobalEventType {
+  play,
+  pause,
+  toggle,
 }
