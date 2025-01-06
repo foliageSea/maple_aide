@@ -1,22 +1,32 @@
 import 'package:hotkey_system/hotkey_system.dart';
 import 'package:maple_aide/global.dart';
 
+import 'window_manager_helper.dart';
+
 class HotkeyHelper {
   static HotkeyHelper? _helper;
 
   HotkeyHelper._();
 
   factory HotkeyHelper() {
-    return _helper ?? HotkeyHelper._();
+    _helper ??= HotkeyHelper._();
+    return _helper!;
   }
 
   Map<HotKey, HotKeyHandler> hotkeys = {
     HotKey(
       KeyCode.digit1,
-      modifiers: [KeyModifier.control],
+      modifiers: [KeyModifier.alt],
       scope: HotKeyScope.system,
     ): (hotKey) {
       Global.eventBus.fire(GlobalEvent(GlobalEventType.toggle));
+    },
+    HotKey(
+      KeyCode.digit2,
+      modifiers: [KeyModifier.alt],
+      scope: HotKeyScope.system,
+    ): (hotKey) {
+      WindowManagerHelper().minWin();
     },
   };
 

@@ -40,6 +40,7 @@ dependencies:
   hotkey_system: ^0.0.9
   window_manager: ^0.4.3
   event_bus: ^2.0.1
+  shared_preferences: ^2.3.5
 
 dev_dependencies:
   flutter_test:

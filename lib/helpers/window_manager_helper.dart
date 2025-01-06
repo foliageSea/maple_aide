@@ -7,7 +7,8 @@ class WindowManagerHelper {
   WindowManagerHelper._();
 
   factory WindowManagerHelper() {
-    return _helper ?? WindowManagerHelper._();
+    _helper ??= WindowManagerHelper._();
+    return _helper!;
   }
 
   Future ensureInitialized() async {
@@ -18,6 +19,7 @@ class WindowManagerHelper {
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
       titleBarStyle: TitleBarStyle.hidden,
+      alwaysOnTop: false,
     );
     windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.show();
@@ -26,7 +28,15 @@ class WindowManagerHelper {
   }
 
   Future minWin() async {
-    await windowManager.setSize(const Size(512, 384));
-    windowManager.setAlignment(Alignment.bottomRight);
+    var size = await windowManager.getSize();
+    if (size == const Size(1024, 768)) {
+      await windowManager.setSize(const Size(512, 384));
+      await windowManager.setAlignment(Alignment.bottomLeft);
+      await windowManager.setAlwaysOnTop(true);
+    } else {
+      await windowManager.setSize(const Size(1024, 768));
+      await windowManager.setAlignment(Alignment.center);
+      await windowManager.setAlwaysOnTop(false);
+    }
   }
 }
