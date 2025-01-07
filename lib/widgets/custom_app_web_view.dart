@@ -28,12 +28,12 @@ class _CustomAppWebViewState extends State<CustomAppWebView> {
     iframeAllowFullscreen: true,
   );
 
-  PullToRefreshController? pullToRefreshController;
-
   String url = "";
   double progress = 0;
   final urlController = TextEditingController();
   URLRequest urlRequest = URLRequest(url: WebUri('https://www.google.com/'));
+
+  final prefs = PreferencesHelper().prefs;
 
   @override
   void initState() {
@@ -53,9 +53,7 @@ class _CustomAppWebViewState extends State<CustomAppWebView> {
   }
 
   void _initConfig() {
-    var url =
-        PreferencesHelper().prefs.getString(PreferencesKey.url.name) ?? '';
-
+    var url = prefs.getString(PreferencesKey.url.name) ?? '';
     if (url.isNotEmpty) {
       urlRequest.url = WebUri(url);
       setState(() {});
@@ -104,7 +102,6 @@ class _CustomAppWebViewState extends State<CustomAppWebView> {
       initialUrlRequest: urlRequest,
       initialUserScripts: userScripts,
       initialSettings: settings,
-      pullToRefreshController: pullToRefreshController,
       onWebViewCreated: (controller) async {
         webViewController = controller;
       },
@@ -131,20 +128,7 @@ class _CustomAppWebViewState extends State<CustomAppWebView> {
 
         return NavigationActionPolicy.ALLOW;
       },
-      onLoadStop: (controller, url) {
-        pullToRefreshController?.endRefreshing();
-        setState(() {
-          this.url = url.toString();
-          urlController.text = this.url;
-        });
-      },
-      onReceivedError: (controller, request, error) {
-        pullToRefreshController?.endRefreshing();
-      },
       onProgressChanged: (controller, progress) {
-        if (progress == 100) {
-          pullToRefreshController?.endRefreshing();
-        }
         setState(() {
           this.progress = progress / 100;
           urlController.text = url;
@@ -156,10 +140,10 @@ class _CustomAppWebViewState extends State<CustomAppWebView> {
           urlController.text = this.url;
         });
 
-        await PreferencesHelper().prefs.setString(
-              PreferencesKey.url.name,
-              this.url,
-            );
+        await prefs.setString(
+          PreferencesKey.url.name,
+          this.url,
+        );
       },
       onConsoleMessage: (controller, consoleMessage) {},
     );
