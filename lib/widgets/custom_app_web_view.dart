@@ -2,7 +2,6 @@ import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:maple_aide/constants/user_scripts.dart';
 import 'package:maple_aide/global.dart';
@@ -35,7 +34,7 @@ class _CustomAppWebViewState extends State<CustomAppWebView> {
   String url = "";
   double progress = 0;
   final urlController = TextEditingController();
-  URLRequest urlRequest = URLRequest(url: WebUri('https://www.bilibili.com/'));
+  URLRequest urlRequest = URLRequest(url: WebUri('https://www.google.com/'));
 
   @override
   void initState() {

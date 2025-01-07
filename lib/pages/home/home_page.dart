@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:maple_aide/helpers/window_manager_helper.dart';
 import 'package:maple_aide/widgets/custom_app_web_view.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -12,11 +12,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
@@ -26,7 +21,7 @@ class _HomePageState extends State<HomePage> {
           title: const Text('Maple Aide'),
         ),
       ),
-      body: CustomAppWebView(),
+      body: const CustomAppWebView(),
     );
   }
 }

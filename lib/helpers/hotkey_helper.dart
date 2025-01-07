@@ -26,7 +26,7 @@ class HotkeyHelper {
       modifiers: [KeyModifier.alt],
       scope: HotKeyScope.system,
     ): (hotKey) {
-      WindowManagerHelper().minWin();
+      WindowManagerHelper().minMode();
     },
   };
 
