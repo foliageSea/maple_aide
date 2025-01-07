@@ -51,6 +51,7 @@ class GlobalEvent {
 enum GlobalEventType {
   toggle,
   fullScreen,
+  prev,
   next,
   forward,
   back,

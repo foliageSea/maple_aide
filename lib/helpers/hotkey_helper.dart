@@ -24,7 +24,7 @@ class HotkeyHelper {
     ): (hotKey) {
       log('Alt+1');
       Global.eventBus.fire(GlobalEvent(GlobalEventType.toggle));
-      // showToast('播放切换');
+      showToast('播放/暂停切换');
     },
     HotKey(
       KeyCode.digit2,
@@ -54,13 +54,22 @@ class HotkeyHelper {
       showToast('前进5s');
     },
     HotKey(
+      KeyCode.arrowUp,
+      modifiers: [KeyModifier.alt],
+      scope: HotKeyScope.system,
+    ): (hotKey) {
+      log('Alt+上箭头');
+      Global.eventBus.fire(GlobalEvent(GlobalEventType.prev));
+      showToast('播放上一个视频');
+    },
+    HotKey(
       KeyCode.arrowDown,
       modifiers: [KeyModifier.alt],
       scope: HotKeyScope.system,
     ): (hotKey) {
       log('Alt+下箭头');
       Global.eventBus.fire(GlobalEvent(GlobalEventType.next));
-      // showToast('播放下一个视频');
+      showToast('播放下一个视频');
     },
   };
 
