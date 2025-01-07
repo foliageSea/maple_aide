@@ -2,7 +2,7 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:hotkey_system/hotkey_system.dart';
+import 'package:maple_aide/helpers/hotkey_helper.dart';
 import 'package:maple_aide/helpers/preferences_helper.dart';
 
 import 'helpers/window_manager_helper.dart';
@@ -17,7 +17,7 @@ class Global {
 
     await PreferencesHelper().init();
 
-    await hotKeySystem.unregisterAll();
+    await HotkeyHelper().unregisterAll();
 
     await _initWebView();
 
@@ -48,4 +48,10 @@ class GlobalEvent {
   GlobalEvent(this.type);
 }
 
-enum GlobalEventType { toggle, fullScreen, pre, next }
+enum GlobalEventType {
+  toggle,
+  fullScreen,
+  next,
+  forward,
+  back,
+}

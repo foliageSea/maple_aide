@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:maple_aide/helpers/hotkey_helper.dart';
 import 'package:maple_aide/pages/home/home_page.dart';
 import 'package:window_manager/window_manager.dart';
@@ -6,7 +7,13 @@ import 'package:window_manager/window_manager.dart';
 import 'global.dart';
 
 void main() {
-  Global.initApp().then((_) => runApp(const MyApp()));
+  Global.initApp()
+      .then(
+        (_) => runApp(const MyApp()),
+      )
+      .catchError(
+        (error) => runApp(ErrorApp(error: error)),
+      );
 }
 
 class MyApp extends StatefulWidget {
@@ -20,7 +27,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-
     HotkeyHelper().register();
   }
 
@@ -36,15 +42,51 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
+      navigatorObservers: [FlutterSmartDialog.observer],
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       builder: (context, child) {
-        child = virtualWindowFrameBuilder(context, child);
-        return child;
+        var c = FlutterSmartDialog.init(
+          builder: (context, child) {
+            return child!;
+          },
+        )(context, child);
+        c = virtualWindowFrameBuilder(context, c);
+        return c;
       },
       home: const HomePage(),
+    );
+  }
+}
+
+class ErrorApp extends StatelessWidget {
+  final dynamic error;
+
+  const ErrorApp({super.key, required this.error});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(useMaterial3: true),
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('启动异常'),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.error_outline,
+                size: 120,
+              ),
+              Text("$error"),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

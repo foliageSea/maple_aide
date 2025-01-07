@@ -1,5 +1,4 @@
-import 'dart:collection';
-
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -200,6 +199,20 @@ class _CustomAppWebViewState extends State<CustomAppWebView> {
           icon: const Icon(Icons.skip_next),
           onPressed: () {
             Global.eventBus.fire(GlobalEvent(GlobalEventType.next));
+          },
+        ),
+        IconButton(
+          icon: const Icon(Icons.info),
+          onPressed: () async {
+            await showOkAlertDialog(
+              context: context,
+              title: '提示',
+              message: 'Alt+1: 播放/暂停\n'
+                  'Alt+2: 窗口模式切换\n'
+                  'Alt+左箭头: 后退\n'
+                  'Alt+右箭头: 前进\n'
+                  'Alt+下箭头: 播放下一视频',
+            );
           },
         ),
       ],

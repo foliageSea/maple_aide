@@ -9,7 +9,9 @@ var userScripts = UnmodifiableListView<UserScript>(
       source:
           "window.toggle = () => document.querySelector('video')?.paused? document.querySelector('video')?.play():document.querySelector('video')?.pause();"
           "window.fullScreen = () => document.querySelector('.bpx-player-ctrl-web-enter')?.click();"
-          "window.next = () => document.querySelector('.bpx-player-ctrl-next')?.click();",
+          "window.next = () => document.querySelector('.bpx-player-ctrl-next')?.click();"
+          "window.forward = () => document.querySelector('video').currentTime += 5;"
+          "window.back = () => document.querySelector('video').currentTime -= 5;",
       injectionTime: UserScriptInjectionTime.AT_DOCUMENT_END,
     ),
   ],
@@ -18,6 +20,7 @@ var userScripts = UnmodifiableListView<UserScript>(
 Map<GlobalEventType, String> userScriptsHandlers = {
   GlobalEventType.toggle: 'window.toggle()',
   GlobalEventType.fullScreen: 'window.fullScreen()',
-  GlobalEventType.pre: 'window.pre()',
   GlobalEventType.next: 'window.next()',
+  GlobalEventType.forward: 'window.forward()',
+  GlobalEventType.back: 'window.back()',
 };
