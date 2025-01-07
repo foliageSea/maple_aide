@@ -13,10 +13,10 @@ class CustomAppWebView extends StatefulWidget {
   });
 
   @override
-  State<CustomAppWebView> createState() => _CustomAppWebViewState();
+  State<CustomAppWebView> createState() => CustomAppWebViewState();
 }
 
-class _CustomAppWebViewState extends State<CustomAppWebView> {
+class CustomAppWebViewState extends State<CustomAppWebView> {
   final GlobalKey webViewKey = GlobalKey();
 
   InAppWebViewController? webViewController;
@@ -34,6 +34,8 @@ class _CustomAppWebViewState extends State<CustomAppWebView> {
   URLRequest urlRequest = URLRequest(url: WebUri('https://www.google.com/'));
 
   final prefs = PreferencesHelper().prefs;
+
+  bool showBar = true;
 
   @override
   void initState() {
@@ -60,6 +62,11 @@ class _CustomAppWebViewState extends State<CustomAppWebView> {
     }
   }
 
+  void toggleShowActionBar() {
+    showBar = !showBar;
+    setState(() {});
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -71,7 +78,10 @@ class _CustomAppWebViewState extends State<CustomAppWebView> {
       body: SafeArea(
         child: Column(
           children: <Widget>[
-            _buildActionBar(),
+            Visibility(
+              visible: showBar,
+              child: _buildActionBar(),
+            ),
             const SizedBox(
               height: 4,
             ),
