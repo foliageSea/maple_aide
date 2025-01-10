@@ -30,6 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -43,6 +45,11 @@ dependencies:
   shared_preferences: ^2.3.5
   adaptive_dialog: ^2.3.0
   flutter_smart_dialog: ^4.9.8+5
+  isar: ^3.1.0+1
+  isar_flutter_libs: ^3.1.0+1
+  path_provider: ^2.1.5
+  get: ^4.6.5
+  path: ^1.9.0
 
 dev_dependencies:
   flutter_test:
@@ -55,6 +62,8 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
   flutter_launcher_icons: ^0.14.2
+  isar_generator: ^3.1.0+1
+  build_runner: ^2.4.13
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

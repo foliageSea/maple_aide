@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 import 'package:maple_aide/helpers/hotkey_helper.dart';
 import 'package:maple_aide/pages/home/home_page.dart';
 import 'package:window_manager/window_manager.dart';
@@ -39,8 +40,8 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     final virtualWindowFrameBuilder = VirtualWindowFrameInit();
-    return MaterialApp(
-      title: 'Flutter Demo',
+    return GetMaterialApp(
+      title: Global.appName,
       debugShowCheckedModeBanner: false,
       navigatorObservers: [FlutterSmartDialog.observer],
       theme: ThemeData(

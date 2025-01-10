@@ -2,18 +2,22 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:maple_aide/db/db.dart';
 import 'package:maple_aide/helpers/hotkey_helper.dart';
 import 'package:maple_aide/helpers/preferences_helper.dart';
 
 import 'helpers/window_manager_helper.dart';
 
 class Global {
+  static String appName = 'maple_aide';
   static WebViewEnvironment? webViewEnvironment;
   static String userDataFolder = 'userData';
   static EventBus eventBus = EventBus();
 
   static Future initApp() async {
     WidgetsFlutterBinding.ensureInitialized();
+
+    await Db().init();
 
     await PreferencesHelper().init();
 

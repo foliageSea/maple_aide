@@ -6,6 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   dynamic_color
   flutter_inappwebview_windows
   hotkey_system
+  isar_flutter_libs
   screen_retriever_windows
   url_launcher_windows
   window_manager

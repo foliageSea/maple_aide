@@ -1,4 +1,3 @@
-import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -10,7 +9,18 @@ import 'package:url_launcher/url_launcher.dart';
 class CustomAppWebView extends StatefulWidget {
   const CustomAppWebView({
     super.key,
+    required this.id,
+    required this.url,
+    this.actions,
+    this.onUpdateVisitedHistory,
+    this.onCloseTab,
   });
+
+  final int id;
+  final String? url;
+  final Function(String url)? onUpdateVisitedHistory;
+  final Function(int id)? onCloseTab;
+  final Widget? actions;
 
   @override
   State<CustomAppWebView> createState() => CustomAppWebViewState();
@@ -31,17 +41,25 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
   String url = "";
   double progress = 0;
   final urlController = TextEditingController();
-  URLRequest urlRequest = URLRequest(url: WebUri('https://www.google.com/'));
 
   final prefs = PreferencesHelper().prefs;
 
   bool showBar = true;
 
+  URLRequest? urlRequest;
+
   @override
   void initState() {
     super.initState();
+
     _initEvent();
-    _initConfig();
+
+    _loadConfig();
+  }
+
+  Future _loadConfig() async {
+    urlRequest =
+        URLRequest(url: WebUri(widget.url ?? 'https://www.google.com/'));
   }
 
   void _initEvent() {
@@ -52,14 +70,6 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
       }
       await webViewController?.evaluateJavascript(source: handler);
     });
-  }
-
-  void _initConfig() {
-    var url = prefs.getString(PreferencesKey.url.name) ?? '';
-    if (url.isNotEmpty) {
-      urlRequest.url = WebUri(url);
-      setState(() {});
-    }
   }
 
   void toggleShowActionBar() {
@@ -105,11 +115,11 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
         : Container();
   }
 
-  InAppWebView _buildWebView() {
+  Widget _buildWebView() {
     return InAppWebView(
       key: webViewKey,
-      webViewEnvironment: Global.webViewEnvironment,
       initialUrlRequest: urlRequest,
+      webViewEnvironment: Global.webViewEnvironment,
       initialUserScripts: userScripts,
       initialSettings: settings,
       onWebViewCreated: (controller) async {
@@ -148,12 +158,8 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
         setState(() {
           this.url = url.toString();
           urlController.text = this.url;
+          widget.onUpdateVisitedHistory?.call(this.url);
         });
-
-        await prefs.setString(
-          PreferencesKey.url.name,
-          this.url,
-        );
       },
       onConsoleMessage: (controller, consoleMessage) {},
     );
@@ -195,20 +201,7 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
             Global.eventBus.fire(GlobalEvent(GlobalEventType.next));
           },
         ),
-        IconButton(
-          icon: const Icon(Icons.info),
-          onPressed: () async {
-            await showOkAlertDialog(
-              context: context,
-              title: '提示',
-              message: 'Alt+1: 播放/暂停\n'
-                  'Alt+2: 窗口模式切换\n'
-                  'Alt+左箭头: 后退\n'
-                  'Alt+右箭头: 前进\n'
-                  'Alt+下箭头: 播放下一视频',
-            );
-          },
-        ),
+        widget.actions ?? Container(),
       ],
     );
   }
