@@ -6,4 +6,5 @@ part 'tab_entity.g.dart';
 class TabEntity {
   Id id = Isar.autoIncrement;
   String? url;
+  String? title;
 }

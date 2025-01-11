@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:maple_aide/constants/user_scripts.dart';
 import 'package:maple_aide/global.dart';
+import 'package:maple_aide/helpers/hotkey_helper.dart';
 import 'package:maple_aide/helpers/preferences_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:html/parser.dart' show parse;
 
 class CustomAppWebView extends StatefulWidget {
   const CustomAppWebView({
@@ -12,15 +14,15 @@ class CustomAppWebView extends StatefulWidget {
     required this.id,
     required this.url,
     this.actions,
-    this.onUpdateVisitedHistory,
+    this.onLoadStop,
     this.onCloseTab,
   });
 
   final int id;
   final String? url;
-  final Function(String url)? onUpdateVisitedHistory;
+  final Function(int id, String url, String? title)? onLoadStop;
   final Function(int id)? onCloseTab;
-  final Widget? actions;
+  final List<Widget>? actions;
 
   @override
   State<CustomAppWebView> createState() => CustomAppWebViewState();
@@ -33,9 +35,6 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
   InAppWebViewSettings settings = InAppWebViewSettings(
     isInspectable: kDebugMode,
     mediaPlaybackRequiresUserGesture: false,
-    allowsInlineMediaPlayback: true,
-    iframeAllow: "camera; microphone",
-    iframeAllowFullscreen: true,
   );
 
   String url = "";
@@ -59,11 +58,15 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
 
   Future _loadConfig() async {
     urlRequest =
-        URLRequest(url: WebUri(widget.url ?? 'https://www.google.com/'));
+        URLRequest(url: WebUri(widget.url ?? 'https://www.bilibili.com/'));
   }
 
   void _initEvent() {
     Global.eventBus.on<GlobalEvent>().listen((event) async {
+      if (HotkeyHelper().id != widget.id) {
+        return;
+      }
+
       var handler = userScriptsHandlers[event.type];
       if (handler == null) {
         return;
@@ -155,13 +158,18 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
         });
       },
       onUpdateVisitedHistory: (controller, url, isReload) async {
-        setState(() {
-          this.url = url.toString();
-          urlController.text = this.url;
-          widget.onUpdateVisitedHistory?.call(this.url);
-        });
+        this.url = url.toString();
+        urlController.text = this.url;
+        setState(() {});
       },
       onConsoleMessage: (controller, consoleMessage) {},
+      onLoadStop: (controller, url) async {
+        var html = await controller.getHtml() ?? "";
+        final document = parse(html);
+        final titleElement = document.querySelector('title');
+        final title = titleElement?.text;
+        widget.onLoadStop?.call(widget.id, this.url, title);
+      },
     );
   }
 
@@ -192,16 +200,17 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
         IconButton(
           icon: const Icon(Icons.fullscreen),
           onPressed: () {
-            Global.eventBus.fire(GlobalEvent(GlobalEventType.fullScreen));
+            Global.eventBus
+                .fire(GlobalEvent(widget.id, GlobalEventType.fullScreen));
           },
         ),
         IconButton(
           icon: const Icon(Icons.skip_next),
           onPressed: () {
-            Global.eventBus.fire(GlobalEvent(GlobalEventType.next));
+            Global.eventBus.fire(GlobalEvent(widget.id, GlobalEventType.next));
           },
         ),
-        widget.actions ?? Container(),
+        ...(widget.actions ?? []),
       ],
     );
   }

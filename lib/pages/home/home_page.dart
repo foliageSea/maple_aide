@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:maple_aide/db/dao/tab_dao.dart';
 import 'package:maple_aide/pages/home/home_controller.dart';
 import 'package:maple_aide/utils/utils.dart';
 import 'package:maple_aide/widgets/custom_app_web_view.dart';
@@ -51,6 +50,56 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: Obx(() => _buildTabs()),
+      drawer: Obx(() => _buildDrawer()),
+    );
+  }
+
+  Drawer _buildDrawer() {
+    var tabs = controller.tabs;
+
+    var i = 0;
+    var list = tabs.map((e) {
+      var page = i;
+      var child = ListTile(
+        title: Text(
+          e.title ?? '-',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        subtitle: Text(
+          e.url ?? '-',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(color: Colors.grey),
+        ),
+        onTap: () {
+          pageController.animateToPage(page,
+              duration: const Duration(milliseconds: 200), curve: Curves.ease);
+        },
+      );
+      i++;
+      return child;
+    }).toList();
+
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/IMG_5732.PNG'),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: Container(),
+          ),
+          ...list,
+        ],
+      ),
     );
   }
 
@@ -78,6 +127,9 @@ class _HomePageState extends State<HomePage> {
               var index = controller.index;
               index.value = i;
               index.refresh();
+
+              var tab = tabs[i];
+              controller.hotkeyHelper.id = tab.id;
             },
             itemCount: tabs.length,
             itemBuilder: (BuildContext context, int index) {
@@ -87,10 +139,19 @@ class _HomePageState extends State<HomePage> {
                   key: tab.key,
                   id: tab.id,
                   url: tab.url,
-                  actions: Obx(() => _buildAction(tab.id)),
-                  onUpdateVisitedHistory: (url) async {
-                    await controller.handleUpdateUrl(tab.id, url);
+                  actions: [
+                    IconButton(
+                      onPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                      icon: const Icon(Icons.tab),
+                    ),
+                    _buildAction(tab.id),
+                  ],
+                  onLoadStop: (id, url, title) async {
+                    await controller.handleUpdateUrl(id, url, title);
                     tab.url = url;
+                    tab.title = title;
                     tabs.refresh();
                   },
                 ),
@@ -103,27 +164,21 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildAction(int id) {
-    var index = controller.index.value + 1;
-    var length = controller.tabs.length;
-
     return PopupMenuButton<String>(
       itemBuilder: (BuildContext context) {
         return [
           PopupMenuItem(
-            onTap: () {
-              pageController.previousPage(
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.ease);
+            onTap: () async {
+              await controller.addTab();
+
+              var index = controller.tabs.length - 1;
+              pageController.animateToPage(
+                index,
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.ease,
+              );
             },
-            child: const Text('上一页'),
-          ),
-          PopupMenuItem(
-            onTap: () {
-              pageController.nextPage(
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.ease);
-            },
-            child: const Text('下一页'),
+            child: const Text('新建标签'),
           ),
           PopupMenuItem(
             onTap: () async {
@@ -134,24 +189,9 @@ class _HomePageState extends State<HomePage> {
                 return;
               }
 
-              await TabDao().delete(id);
-              await controller.loadData();
+              controller.removeTab(id);
             },
             child: const Text('关闭标签'),
-          ),
-          PopupMenuItem(
-            onTap: () async {
-              await controller.addTab();
-
-              var index = controller.tabs.length - 1;
-              pageController.animateToPage(index,
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.ease);
-            },
-            child: const Text('新建标签'),
-          ),
-          PopupMenuItem(
-            child: Text('$index/$length'),
           ),
           PopupMenuItem(
             onTap: () async {
@@ -160,8 +200,9 @@ class _HomePageState extends State<HomePage> {
                 title: '提示',
                 message: 'Alt+1: 播放/暂停\n'
                     'Alt+2: 窗口模式切换\n'
-                    'Alt+左箭头: 后退\n'
-                    'Alt+右箭头: 前进\n'
+                    'Alt+左箭头: 后退5s\n'
+                    'Alt+右箭头: 前进5s\n'
+                    'Alt+上箭头: 播放上一视频\n'
                     'Alt+下箭头: 播放下一视频',
               );
             },

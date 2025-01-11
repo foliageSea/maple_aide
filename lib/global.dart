@@ -47,9 +47,10 @@ class Global {
 }
 
 class GlobalEvent {
+  late int id;
   late GlobalEventType type;
 
-  GlobalEvent(this.type);
+  GlobalEvent(this.id, this.type);
 }
 
 enum GlobalEventType {

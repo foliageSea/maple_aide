@@ -21,13 +21,16 @@ class TabDao {
     });
   }
 
-  Future update(int id, String url) async {
+  Future update(int id, String url, String? title) async {
     var entity = await isar.tabEntitys.get(id);
     if (entity == null) {
       return;
     }
 
     entity.url = url;
+    if (title != null && title.isNotEmpty) {
+      entity.title = title;
+    }
 
     await isar.writeTxn(() async {
       await isar.tabEntitys.put(entity);
