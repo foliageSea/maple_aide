@@ -3,7 +3,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:maple_aide/helpers/hotkey_helper.dart';
 import 'package:maple_aide/pages/home/home_page.dart';
-import 'package:window_manager/window_manager.dart';
+// import 'package:window_manager/window_manager.dart';
 
 import 'global.dart';
 
@@ -39,7 +39,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final virtualWindowFrameBuilder = VirtualWindowFrameInit();
+    // final virtualWindowFrameBuilder = VirtualWindowFrameInit();
     return GetMaterialApp(
       title: Global.appName,
       debugShowCheckedModeBanner: false,
@@ -54,7 +54,7 @@ class _MyAppState extends State<MyApp> {
             return child!;
           },
         )(context, child);
-        c = virtualWindowFrameBuilder(context, c);
+        // c = virtualWindowFrameBuilder(context, c);
         return c;
       },
       home: const HomePage(),

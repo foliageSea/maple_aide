@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:get/get.dart';
 import 'package:hotkey_system/hotkey_system.dart';
 import 'package:maple_aide/global.dart';
 import 'package:maple_aide/utils/utils.dart';
@@ -16,7 +17,7 @@ class HotkeyHelper {
     return _helper!;
   }
 
-  int id = 0;
+  RxInt id = 0.obs;
 
   Future register() async {
     Map<HotKey, HotKeyHandler> hotkeys = {
@@ -26,7 +27,7 @@ class HotkeyHelper {
         scope: HotKeyScope.system,
       ): (hotKey) {
         log('Alt+1');
-        Global.eventBus.fire(GlobalEvent(id, GlobalEventType.toggle));
+        Global.eventBus.fire(GlobalEvent(id.value, GlobalEventType.toggle));
         showToast('播放/暂停切换');
       },
       HotKey(
@@ -44,7 +45,7 @@ class HotkeyHelper {
         scope: HotKeyScope.system,
       ): (hotKey) {
         log('Alt+左箭头');
-        Global.eventBus.fire(GlobalEvent(id, GlobalEventType.back));
+        Global.eventBus.fire(GlobalEvent(id.value, GlobalEventType.back));
         showToast('后退5s');
       },
       HotKey(
@@ -53,7 +54,7 @@ class HotkeyHelper {
         scope: HotKeyScope.system,
       ): (hotKey) {
         log('Alt+右箭头');
-        Global.eventBus.fire(GlobalEvent(id, GlobalEventType.forward));
+        Global.eventBus.fire(GlobalEvent(id.value, GlobalEventType.forward));
         showToast('前进5s');
       },
       HotKey(
@@ -62,7 +63,7 @@ class HotkeyHelper {
         scope: HotKeyScope.system,
       ): (hotKey) {
         log('Alt+上箭头');
-        Global.eventBus.fire(GlobalEvent(id, GlobalEventType.prev));
+        Global.eventBus.fire(GlobalEvent(id.value, GlobalEventType.prev));
         showToast('播放上一个视频');
       },
       HotKey(
@@ -71,7 +72,7 @@ class HotkeyHelper {
         scope: HotKeyScope.system,
       ): (hotKey) {
         log('Alt+下箭头');
-        Global.eventBus.fire(GlobalEvent(id, GlobalEventType.next));
+        Global.eventBus.fire(GlobalEvent(id.value, GlobalEventType.next));
         showToast('播放下一个视频');
       },
     };

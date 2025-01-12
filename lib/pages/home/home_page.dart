@@ -1,13 +1,10 @@
-import 'dart:developer';
-
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:maple_aide/helpers/hotkey_helper.dart';
 import 'package:maple_aide/pages/home/home_controller.dart';
-import 'package:maple_aide/utils/utils.dart';
 import 'package:maple_aide/widgets/custom_app_web_view.dart';
 import 'package:maple_aide/widgets/keep_alive_page.dart';
-import 'package:window_manager/window_manager.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -30,28 +27,34 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kWindowCaptionHeight),
-        child: GestureDetector(
-          onLongPress: () {
-            log('onLongPress');
-
-            controller
-                .getCustomAppWebViewState()
-                .currentState
-                ?.toggleShowActionBar();
-
-            showToast('长按标题栏切换隐藏/显示地址栏');
-          },
-          child: WindowCaption(
-            brightness: Theme.of(context).brightness,
-            title: const Text('Maple Aide'),
-          ),
-        ),
-      ),
+      // appBar: PreferredSize(
+      //   preferredSize: const Size.fromHeight(kWindowCaptionHeight),
+      //   child: GestureDetector(
+      //     onLongPress: () {
+      //       log('onLongPress');
+      //
+      //       controller
+      //           .getCustomAppWebViewState()
+      //           .currentState
+      //           ?.toggleShowActionBar();
+      //
+      //       showToast('长按标题栏切换隐藏/显示地址栏');
+      //     },
+      //     child: WindowCaption(
+      //       brightness: Theme.of(context).brightness,
+      //       title: const Text('Maple Aide'),
+      //     ),
+      //   ),
+      // ),
       body: Obx(() => _buildTabs()),
       drawer: Obx(() => _buildDrawer()),
     );
+  }
+
+  Color? _getSelectColor(int id) {
+    return HotkeyHelper().id.value == id
+        ? Theme.of(context).primaryColor
+        : null;
   }
 
   Drawer _buildDrawer() {
@@ -65,8 +68,9 @@ class _HomePageState extends State<HomePage> {
           e.title ?? '-',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.bold,
+            color: _getSelectColor(e.id),
           ),
         ),
         subtitle: Text(
@@ -129,7 +133,9 @@ class _HomePageState extends State<HomePage> {
               index.refresh();
 
               var tab = tabs[i];
-              controller.hotkeyHelper.id = tab.id;
+              var id = controller.hotkeyHelper.id;
+              id.value = tab.id;
+              id.refresh();
             },
             itemCount: tabs.length,
             itemBuilder: (BuildContext context, int index) {
@@ -148,7 +154,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     _buildAction(tab.id),
                   ],
-                  onLoadStop: (id, url, title) async {
+                  onUpdateVisitedHistory: (id, url, title) async {
                     await controller.handleUpdateUrl(id, url, title);
                     tab.url = url;
                     tab.title = title;

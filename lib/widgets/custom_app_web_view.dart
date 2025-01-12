@@ -14,13 +14,13 @@ class CustomAppWebView extends StatefulWidget {
     required this.id,
     required this.url,
     this.actions,
-    this.onLoadStop,
+    this.onUpdateVisitedHistory,
     this.onCloseTab,
   });
 
   final int id;
   final String? url;
-  final Function(int id, String url, String? title)? onLoadStop;
+  final Function(int id, String url, String? title)? onUpdateVisitedHistory;
   final Function(int id)? onCloseTab;
   final List<Widget>? actions;
 
@@ -161,15 +161,17 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
         this.url = url.toString();
         urlController.text = this.url;
         setState(() {});
+
+        Future.delayed(const Duration(seconds: 1), () async {
+          var html = await controller.getHtml() ?? "";
+          final document = parse(html);
+          final titleElement = document.querySelector('title');
+          final title = titleElement?.text;
+          widget.onUpdateVisitedHistory?.call(widget.id, this.url, title);
+        });
       },
       onConsoleMessage: (controller, consoleMessage) {},
-      onLoadStop: (controller, url) async {
-        var html = await controller.getHtml() ?? "";
-        final document = parse(html);
-        final titleElement = document.querySelector('title');
-        final title = titleElement?.text;
-        widget.onLoadStop?.call(widget.id, this.url, title);
-      },
+      onLoadStop: (controller, url) async {},
     );
   }
 

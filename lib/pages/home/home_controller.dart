@@ -31,7 +31,9 @@ class HomeController extends GetxController {
       tabs.refresh();
 
       if (tabs.isNotEmpty) {
-        hotkeyHelper.id = tabs.first.id;
+        var id = hotkeyHelper.id;
+        id.value = tabs.first.id;
+        id.refresh();
       }
     } catch (_) {}
   }
