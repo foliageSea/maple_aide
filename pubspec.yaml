@@ -67,6 +67,7 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.2
   isar_generator: ^3.1.0+1
   build_runner: ^2.4.13
+  package_rename: ^1.8.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -114,10 +115,18 @@ flutter:
   # see https://flutter.dev/to/font-from-package
 
 
+# dart run flutter_launcher_icons
 flutter_launcher_icons:
   windows:
     generate: true
     image_path: "assets/icon/icon.png"
     icon_size: 256 # min:48, max:256, default: 48
 
-# dart run flutter_launcher_icons
+# dart run package_rename
+package_rename_config:
+ windows:
+    app_name: "Maple Aide"  # 窗口标题和软件名称
+    organization: "Maple Studio"  # 公司/组织名称
+    copyright_notice: "Copyright © 2024 Maple Studio. All rights reserved."  # 版权声明
+    exe_name: "maple_aide"  # 可执行文件名
+
