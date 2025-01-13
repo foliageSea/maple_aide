@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:maple_aide/global.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:windows_single_instance/windows_single_instance.dart';
 
 class WindowManagerHelper {
   static WindowManagerHelper? _helper;
@@ -28,8 +30,10 @@ class WindowManagerHelper {
     );
 
     windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.setPreventClose(true);
       await windowManager.show();
       await windowManager.focus();
+      windowManager.addListener(_WindowListener());
     });
   }
 
@@ -65,9 +69,26 @@ class WindowManagerHelper {
     }
     return true;
   }
+
+  /// windows设置单实例启动
+  Future setSingleInstance(List<String> args) async {
+    await WindowsSingleInstance.ensureSingleInstance(args, Global.appName,
+        onSecondWindow: (args) async {
+      // 唤起并聚焦
+      if (await windowManager.isMinimized()) await windowManager.restore();
+      windowManager.focus();
+    });
+  }
 }
 
 enum WindowManagerSize {
   normal,
   min,
+}
+
+class _WindowListener extends WindowListener {
+  @override
+  Future<void> onWindowClose() async {
+    windowManager.hide();
+  }
 }

@@ -5,6 +5,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:maple_aide/db/db.dart';
 import 'package:maple_aide/helpers/hotkey_helper.dart';
 import 'package:maple_aide/helpers/preferences_helper.dart';
+import 'package:maple_aide/helpers/tray_manager_helper.dart';
 import 'package:path/path.dart' as p;
 import 'helpers/window_manager_helper.dart';
 
@@ -17,6 +18,9 @@ class Global {
   static Future initApp() async {
     WidgetsFlutterBinding.ensureInitialized();
 
+    var windowManagerHelper = WindowManagerHelper();
+    windowManagerHelper.setSingleInstance([]);
+
     await Db().init();
 
     await PreferencesHelper().init();
@@ -25,8 +29,10 @@ class Global {
 
     await _initWebView();
 
-    var windowManagerHelper = WindowManagerHelper();
     await windowManagerHelper.ensureInitialized();
+
+    var trayManagerHelper = TrayManagerHelper();
+    await trayManagerHelper.init();
   }
 
   static Future _initWebView() async {
