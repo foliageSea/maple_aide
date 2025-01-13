@@ -1,10 +1,15 @@
+import 'dart:developer';
+
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:maple_aide/constants/animation_constants.dart';
 import 'package:maple_aide/helpers/hotkey_helper.dart';
 import 'package:maple_aide/pages/home/home_controller.dart';
+import 'package:maple_aide/utils/utils.dart';
 import 'package:maple_aide/widgets/custom_app_web_view.dart';
 import 'package:maple_aide/widgets/keep_alive_page.dart';
+import 'package:window_manager/window_manager.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,27 +32,31 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: PreferredSize(
-      //   preferredSize: const Size.fromHeight(kWindowCaptionHeight),
-      //   child: GestureDetector(
-      //     onLongPress: () {
-      //       log('onLongPress');
-      //
-      //       controller
-      //           .getCustomAppWebViewState()
-      //           .currentState
-      //           ?.toggleShowActionBar();
-      //
-      //       showToast('长按标题栏切换隐藏/显示地址栏');
-      //     },
-      //     child: WindowCaption(
-      //       brightness: Theme.of(context).brightness,
-      //       title: const Text('Maple Aide'),
-      //     ),
-      //   ),
-      // ),
+      // appBar: _buildAppBar(context),
       body: Obx(() => _buildTabs()),
       drawer: Obx(() => _buildDrawer()),
+    );
+  }
+
+  Widget _buildAppBar(BuildContext context) {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(kWindowCaptionHeight),
+      child: GestureDetector(
+        onLongPress: () {
+          log('onLongPress');
+
+          controller
+              .getCustomAppWebViewState()
+              .currentState
+              ?.toggleShowActionBar();
+
+          showToast('长按标题栏切换隐藏/显示地址栏');
+        },
+        child: WindowCaption(
+          brightness: Theme.of(context).brightness,
+          title: const Text('Maple Aide'),
+        ),
+      ),
     );
   }
 
@@ -81,7 +90,8 @@ class _HomePageState extends State<HomePage> {
         ),
         onTap: () {
           pageController.animateToPage(page,
-              duration: const Duration(milliseconds: 200), curve: Curves.ease);
+              duration: AnimationConstants.duration,
+              curve: AnimationConstants.curve);
         },
       );
       i++;
@@ -180,8 +190,8 @@ class _HomePageState extends State<HomePage> {
               var index = controller.tabs.length - 1;
               pageController.animateToPage(
                 index,
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.ease,
+                duration: AnimationConstants.duration,
+                curve: AnimationConstants.curve,
               );
             },
             child: const Text('新建标签'),
