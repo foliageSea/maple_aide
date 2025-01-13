@@ -5,7 +5,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:maple_aide/db/db.dart';
 import 'package:maple_aide/helpers/hotkey_helper.dart';
 import 'package:maple_aide/helpers/preferences_helper.dart';
-
+import 'package:path/path.dart' as p;
 import 'helpers/window_manager_helper.dart';
 
 class Global {
@@ -36,12 +36,13 @@ class Global {
           'Failed to find an installed WebView2 runtime or non-stable Microsoft Edge installation.');
 
       webViewEnvironment = await WebViewEnvironment.create(
-          settings: WebViewEnvironmentSettings(
-        additionalBrowserArguments: kDebugMode
-            ? '--enable-features=msEdgeDevToolsWdpRemoteDebugging'
-            : null,
-        userDataFolder: userDataFolder,
-      ));
+        settings: WebViewEnvironmentSettings(
+          additionalBrowserArguments: kDebugMode
+              ? '--enable-features=msEdgeDevToolsWdpRemoteDebugging'
+              : null,
+          userDataFolder: p.join(Db().path.path, userDataFolder),
+        ),
+      );
     }
   }
 }

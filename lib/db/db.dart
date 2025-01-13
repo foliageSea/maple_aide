@@ -18,9 +18,11 @@ class Db {
 
   late Isar isar;
 
+  late Directory path;
+
   Future init() async {
     final dir = await getApplicationDocumentsDirectory();
-    var path = Directory(p.join(dir.path, Global.appName));
+    path = Directory(p.join(dir.path, Global.appName));
 
     if (!path.existsSync()) {
       path.createSync(recursive: true);
