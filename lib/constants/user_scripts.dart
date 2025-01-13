@@ -12,7 +12,8 @@ var userScripts = UnmodifiableListView<UserScript>(
           "window.prev = () => document.querySelector('.bpx-player-ctrl-prev')?.click();"
           "window.next = () => document.querySelector('.bpx-player-ctrl-next')?.click();"
           "window.forward = () => document.querySelector('video').currentTime += 5;"
-          "window.back = () => document.querySelector('video').currentTime -= 5;",
+          "window.back = () => document.querySelector('video').currentTime -= 5;"
+          "window.muted = () => document.querySelector('video').muted = !document.querySelector('video').muted;",
       injectionTime: UserScriptInjectionTime.AT_DOCUMENT_END,
     ),
   ],
@@ -25,4 +26,5 @@ Map<GlobalEventType, String> userScriptsHandlers = {
   GlobalEventType.next: 'window.next()',
   GlobalEventType.forward: 'window.forward()',
   GlobalEventType.back: 'window.back()',
+  GlobalEventType.muted: 'window.muted()',
 };

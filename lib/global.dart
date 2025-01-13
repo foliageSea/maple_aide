@@ -67,4 +67,5 @@ enum GlobalEventType {
   next,
   forward,
   back,
+  muted,
 }

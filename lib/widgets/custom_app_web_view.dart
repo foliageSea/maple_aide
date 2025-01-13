@@ -35,6 +35,7 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
   InAppWebViewSettings settings = InAppWebViewSettings(
     isInspectable: kDebugMode,
     mediaPlaybackRequiresUserGesture: false,
+    allowsInlineMediaPlayback: true,
   );
 
   String url = "";
@@ -63,7 +64,7 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
 
   void _initEvent() {
     Global.eventBus.on<GlobalEvent>().listen((event) async {
-      if (HotkeyHelper().id != widget.id) {
+      if (HotkeyHelper().id.value != widget.id) {
         return;
       }
 
