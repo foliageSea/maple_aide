@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:maple_aide/constants/user_scripts.dart';
 import 'package:maple_aide/global.dart';
+import 'package:maple_aide/helpers/flutter_inappwebview_helper.dart';
 import 'package:maple_aide/helpers/hotkey_helper.dart';
 import 'package:maple_aide/helpers/preferences_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -120,10 +121,11 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
   }
 
   Widget _buildWebView() {
+    var webViewEnvironment = FlutterInappwebviewHelper().webViewEnvironment;
     return InAppWebView(
       key: webViewKey,
       initialUrlRequest: urlRequest,
-      webViewEnvironment: Global.webViewEnvironment,
+      webViewEnvironment: webViewEnvironment,
       initialUserScripts: userScripts,
       initialSettings: settings,
       onWebViewCreated: (controller) async {
