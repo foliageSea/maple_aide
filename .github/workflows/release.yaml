@@ -1,5 +1,5 @@
 ---
-name: "发布"
+name: "release"
 
 on:
   push:
@@ -8,35 +8,32 @@ on:
   workflow_dispatch:
     inputs:
       logLevel:
-        description: '日志级别'
+        description: 'Log level'
         required: true
         default: 'warning'
 
 jobs:
   flutter-build-windows:
-    name: "Windows 发布"
+    name: "Release for windows"
     runs-on: "windows-latest"
     permissions: write-all
-
+    
     steps:
-      - name: 克隆仓库
+      - name: Clone repository
         uses: actions/checkout@v4
       - run: |
           $tag = "${{ github.ref }}".Replace('refs/tags/', '')
           echo "tag=$(echo $tag)" >> $env:GITHUB_ENV
-      - run: echo "maple_aide_${env:tag}.zip 构建进度"
+      - run: echo "maple_aide_${env:tag}.zip build progress"
       - run: choco install yq
-
-      - name: 启用 Git 长路径
+      - name: Enable Git longpaths
         run: git config --system core.longpaths true
-
-      - name: 设置 Flutter
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
           flutter-version-file: pubspec.yaml
-
-      - name: 设置 Java
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
@@ -44,8 +41,7 @@ jobs:
       - run: flutter pub get
       - run: flutter build windows
       - run: Compress-Archive build/windows/x64/runner/Release/* maple_aide_${env:tag}.zip
-
-      - name: 上传 Windows 输出
+      - name: Upload windows outputs
         uses: actions/upload-artifact@v4
         with:
           name: windows_outputs
@@ -53,26 +49,38 @@ jobs:
             maple_aide_*.zip
 
   release:
-    name: "发布"
+    name: "Release"
     runs-on: "ubuntu-latest"
     needs: [flutter-build-windows]
     permissions: write-all
     steps:
-      - name: 克隆仓库
+      - name: Clone repository
         uses: actions/checkout@v4
 
-      - name: 提取标签名称
+      - name: Extract tag name
         run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
         shell: bash
 
-      - name: 下载 Windows 构建文件
+
+      - name: Download windows build file
         uses: actions/download-artifact@v4
         with:
           name: windows_outputs
           path: windows_outputs
 
-      - name: 列出 windows_outputs 目录中的文件
+      - name: List files in windows_outputs directory
         run: ls -l windows_outputs
 
-      - name: 将 Windows 构建文件复制到根目录
+      - name: Copy windows build file to root
         run: cp windows_outputs/* maple_aide_${{ env.tag }}.zip
+
+
+
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          files: |
+            maple_aide_*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
