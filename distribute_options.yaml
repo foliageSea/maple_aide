@@ -1,8 +1,9 @@
+# dart pub global activate flutter_distributor
+# flutter_distributor release --name build_win
 output: dist/
 variables:
+  # 构建使用的 FLutter SDK
   FLUTTER_ROOT: ~/fvm/versions/3.24.3
-# dart pub activate flutter_distributor
-# dart run flutter_distributor release --name build_win
 releases:
   - name: build_win
     jobs:
