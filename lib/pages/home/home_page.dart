@@ -143,9 +143,7 @@ class _HomePageState extends State<HomePage> {
               index.refresh();
 
               var tab = tabs[i];
-              var id = controller.hotkeyHelper.id;
-              id.value = tab.id;
-              id.refresh();
+              HotkeyHelper().updateId(tab.id);
             },
             itemCount: tabs.length,
             itemBuilder: (BuildContext context, int index) {

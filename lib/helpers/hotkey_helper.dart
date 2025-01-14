@@ -97,4 +97,9 @@ class HotkeyHelper {
   Future unregisterAll() async {
     await hotKeySystem.unregisterAll();
   }
+
+  void updateId(int id) {
+    this.id.value = id;
+    this.id.refresh();
+  }
 }

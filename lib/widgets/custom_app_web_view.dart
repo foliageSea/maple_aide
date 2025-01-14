@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:get/get.dart';
 import 'package:maple_aide/constants/user_scripts.dart';
 import 'package:maple_aide/global.dart';
 import 'package:maple_aide/helpers/flutter_inappwebview_helper.dart';
@@ -101,16 +102,20 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
               height: 4,
             ),
             Expanded(
-              child: Stack(
-                children: [
-                  _buildWebView(),
-                  _buildProgress(),
-                ],
-              ),
+              child: _buildContent(),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildContent() {
+    return Stack(
+      children: [
+        _buildWebView(),
+        _buildProgress(),
+      ],
     );
   }
 

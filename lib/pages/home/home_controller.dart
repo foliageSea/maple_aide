@@ -51,6 +51,7 @@ class HomeController extends GetxController {
       tab.key = GlobalKey<CustomAppWebViewState>();
       tabs.add(tab);
       tabs.refresh();
+      HotkeyHelper().updateId(tab.id);
     } catch (_) {}
   }
 
@@ -70,7 +71,18 @@ class HomeController extends GetxController {
     var tab = tabs.firstWhereOrNull((e) => e.id == id);
 
     if (tab != null) {
+      var index = tabs.indexOf(tab);
       tabs.remove(tab);
+
+      if (tabs.isNotEmpty) {
+        if (index >= tabs.length) {
+          index = tabs.length - 1;
+        }
+
+        var item = tabs[index];
+        HotkeyHelper().updateId(item.id);
+      }
+
       tabs.refresh();
     }
   }
