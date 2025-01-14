@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:get/get.dart';
 import 'package:maple_aide/constants/user_scripts.dart';
 import 'package:maple_aide/global.dart';
 import 'package:maple_aide/helpers/flutter_inappwebview_helper.dart';
