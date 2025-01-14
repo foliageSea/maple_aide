@@ -1,0 +1,16 @@
+output: dist/
+variables:
+  FLUTTER_ROOT: ~/fvm/versions/3.24.3
+# dart pub activate flutter_distributor
+# dart run flutter_distributor release --name build_win
+releases:
+  - name: build_win
+    jobs:
+      - name: windows-exe
+        package:
+          platform: windows
+          target: exe
+      - name: windows-zip
+        package:
+          platform: windows
+          target: zip
