@@ -5,12 +5,15 @@ import 'package:maple_aide/helpers/flutter_inappwebview_helper.dart';
 import 'package:maple_aide/helpers/hotkey_helper.dart';
 import 'package:maple_aide/helpers/preferences_helper.dart';
 import 'package:maple_aide/helpers/tray_manager_helper.dart';
+import 'package:maple_aide/utils/utils.dart';
 import 'helpers/window_manager_helper.dart';
 
 class Global {
   static String appName = 'maple_aide';
 
   static EventBus eventBus = EventBus();
+
+  static String version = '1.0.0';
 
   static Future initApp() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +33,8 @@ class Global {
 
     var trayManagerHelper = TrayManagerHelper();
     await trayManagerHelper.init();
+
+    version = await getAppVersion();
   }
 }
 

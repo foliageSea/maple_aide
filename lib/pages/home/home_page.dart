@@ -4,10 +4,13 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:maple_aide/constants/animation_constants.dart';
+import 'package:maple_aide/db/entity/tab_entity.dart';
+import 'package:maple_aide/global.dart';
 import 'package:maple_aide/helpers/hotkey_helper.dart';
 import 'package:maple_aide/pages/home/home_controller.dart';
 import 'package:maple_aide/utils/utils.dart';
 import 'package:maple_aide/widgets/custom_app_web_view.dart';
+import 'package:maple_aide/widgets/custom_window_caption.dart';
 import 'package:maple_aide/widgets/keep_alive_page.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -32,13 +35,13 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: _buildAppBar(context),
+      appBar: _buildAppBar(context),
       body: Obx(() => _buildTabs()),
       drawer: Obx(() => _buildDrawer()),
     );
   }
 
-  Widget _buildAppBar(BuildContext context) {
+  PreferredSize _buildAppBar(BuildContext context) {
     return PreferredSize(
       preferredSize: const Size.fromHeight(kWindowCaptionHeight),
       child: GestureDetector(
@@ -52,9 +55,9 @@ class _HomePageState extends State<HomePage> {
 
           showToast('长按标题栏切换隐藏/显示地址栏');
         },
-        child: WindowCaption(
+        child: CustomWindowCaption(
           brightness: Theme.of(context).brightness,
-          title: const Text('Maple Aide'),
+          title: Text('Maple Aide v${Global.version}'),
         ),
       ),
     );
@@ -153,15 +156,7 @@ class _HomePageState extends State<HomePage> {
                   key: tab.key,
                   id: tab.id,
                   url: tab.url,
-                  actions: [
-                    IconButton(
-                      onPressed: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                      icon: const Icon(Icons.tab),
-                    ),
-                    _buildAction(tab.id),
-                  ],
+                  actions: _buildExtActions(context, tab),
                   onUpdateVisitedHistory: (id, url, title) async {
                     await controller.handleUpdateUrl(id, url, title);
                     tab.url = url;
@@ -177,7 +172,19 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildAction(int id) {
+  List<Widget> _buildExtActions(BuildContext context, TabEntity tab) {
+    return [
+      IconButton(
+        onPressed: () {
+          Scaffold.of(context).openDrawer();
+        },
+        icon: const Icon(Icons.tab),
+      ),
+      _buildMenu(tab.id),
+    ];
+  }
+
+  Widget _buildMenu(int id) {
     return PopupMenuButton<String>(
       itemBuilder: (BuildContext context) {
         return [
@@ -206,6 +213,12 @@ class _HomePageState extends State<HomePage> {
               controller.removeTab(id);
             },
             child: const Text('关闭标签'),
+          ),
+          PopupMenuItem(
+            onTap: () async {
+              launchURL('https://github.com/foliageSea/maple_aide');
+            },
+            child: const Text('Github'),
           ),
           PopupMenuItem(
             onTap: () async {

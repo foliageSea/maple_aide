@@ -3,7 +3,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:maple_aide/helpers/hotkey_helper.dart';
 import 'package:maple_aide/pages/home/home_page.dart';
-// import 'package:window_manager/window_manager.dart';
+import 'package:window_manager/window_manager.dart';
 
 import 'global.dart';
 
@@ -39,13 +39,13 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // final virtualWindowFrameBuilder = VirtualWindowFrameInit();
+    final virtualWindowFrameBuilder = VirtualWindowFrameInit();
     return GetMaterialApp(
       title: Global.appName,
       debugShowCheckedModeBanner: false,
       navigatorObservers: [FlutterSmartDialog.observer],
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurpleAccent),
         useMaterial3: true,
       ),
       builder: (context, child) {

@@ -25,7 +25,7 @@ class WindowManagerHelper {
       center: true,
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
-      titleBarStyle: TitleBarStyle.normal,
+      titleBarStyle: TitleBarStyle.hidden,
       alwaysOnTop: false,
     );
 
@@ -97,5 +97,6 @@ class _WindowListener extends WindowListener {
   @override
   Future<void> onWindowClose() async {
     windowManager.hide();
+    // windowManager.minimize();
   }
 }
