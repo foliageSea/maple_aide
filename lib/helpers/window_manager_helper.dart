@@ -31,6 +31,7 @@ class WindowManagerHelper {
 
     windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.setPreventClose(true);
+      await windowManager.setMaximizable(false);
       await windowManager.show();
       await windowManager.focus();
       windowManager.addListener(_WindowListener());
@@ -63,11 +64,17 @@ class WindowManagerHelper {
     }
 
     var minimized = await windowManager.isMinimized();
-    if (minimized) {
+    var visible = await isVisible();
+    if (minimized || !visible) {
       await windowManager.show();
       return false;
     }
+
     return true;
+  }
+
+  Future isVisible() async {
+    return windowManager.isVisible();
   }
 
   /// windows设置单实例启动

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -6,6 +8,8 @@ import 'package:maple_aide/global.dart';
 import 'package:maple_aide/helpers/flutter_inappwebview_helper.dart';
 import 'package:maple_aide/helpers/hotkey_helper.dart';
 import 'package:maple_aide/helpers/preferences_helper.dart';
+import 'package:maple_aide/helpers/window_manager_helper.dart';
+import 'package:maple_aide/utils/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:html/parser.dart' show parse;
 
@@ -66,6 +70,11 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
   void _initEvent() {
     Global.eventBus.on<GlobalEvent>().listen((event) async {
       if (HotkeyHelper().id.value != widget.id) {
+        return;
+      }
+
+      var visible = await WindowManagerHelper().isVisible();
+      if (!visible) {
         return;
       }
 
@@ -207,17 +216,26 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
           child: _buildLocationBar(),
         ),
         IconButton(
+          icon: const Icon(Icons.volume_down_alt),
+          onPressed: () {
+            Global.eventBus.fire(GlobalEvent(widget.id, GlobalEventType.muted));
+            showToast('静音模式切换');
+          },
+        ),
+        IconButton(
           icon: const Icon(Icons.fullscreen),
           onPressed: () {
             Global.eventBus
                 .fire(GlobalEvent(widget.id, GlobalEventType.fullScreen));
+            showToast('全屏模式切换');
           },
         ),
-        IconButton(
-          icon: const Icon(Icons.skip_next),
-          onPressed: () {
-            Global.eventBus.fire(GlobalEvent(widget.id, GlobalEventType.next));
-          },
+        const SizedBox(
+          height: 15,
+          child: VerticalDivider(
+            width: 5,
+            color: Colors.grey,
+          ),
         ),
         ...(widget.actions ?? []),
       ],
