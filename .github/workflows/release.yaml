@@ -17,36 +17,38 @@ jobs:
     name: "Windows 版本发布"
     runs-on: "windows-latest"
     permissions: write-all
-    
     steps:
       - name: 克隆仓库
         uses: actions/checkout@v4
       - run: |
           $tag = "${{ github.ref }}".Replace('refs/tags/', '')
           echo "tag=$(echo $tag)" >> $env:GITHUB_ENV
-      - run: echo "maple_aide_${env:tag}.zip 构建进度"
       - run: choco install yq
+
       - name: 启用 Git 长路径支持
         run: git config --system core.longpaths true
+
       - name: 设置 Flutter 环境
         uses: subosito/flutter-action@v2
         with:
           channel: stable
           flutter-version-file: pubspec.yaml
+
       - name: 设置 Java 环境
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '18'
       - run: flutter pub get
-      - run: flutter build windows
-      - run: Compress-Archive build/windows/x64/runner/Release/* maple_aide_${env:tag}.zip
+      - run: dart pub global activate flutter_distributor
+      - run: flutter_distributor release --name build_win
+
       - name: 上传 Windows 构建产物
         uses: actions/upload-artifact@v4
         with:
           name: windows_outputs
           path: |
-            maple_aide_*.zip
+            dist/*/*
 
   release:
     name: "发布"
@@ -57,10 +59,6 @@ jobs:
       - name: 克隆仓库
         uses: actions/checkout@v4
 
-      - name: 提取标签名称
-        run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-        shell: bash
-
       - name: 下载 Windows 构建文件
         uses: actions/download-artifact@v4
         with:
@@ -70,14 +68,11 @@ jobs:
       - name: 列出 windows_outputs 目录文件
         run: ls -l windows_outputs
 
-      - name: 复制 Windows 构建文件到根目录
-        run: cp windows_outputs/* maple_aide_${{ env.tag }}.zip
-
       - name: 创建发布版本
         uses: softprops/action-gh-release@v1
         with:
           draft: true
           files: |
-            maple_aide_*.zip
+            windows_outputs/*/*
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}

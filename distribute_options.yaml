@@ -3,7 +3,7 @@
 output: dist/
 variables:
   # 构建使用的 FLutter SDK
-  FLUTTER_ROOT: ~/fvm/versions/3.24.3
+  # FLUTTER_ROOT: ~/fvm/versions/3.24.3
 releases:
   - name: build_win
     jobs:
