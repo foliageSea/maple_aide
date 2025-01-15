@@ -187,7 +187,11 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
         });
       },
       onConsoleMessage: (controller, consoleMessage) {},
-      onLoadStop: (controller, url) async {},
+      onLoadStop: (controller, url) async {
+        Future.delayed(const Duration(seconds: 1), () {
+          Global.eventBus.fire(GlobalEvent(widget.id, GlobalEventType.muted));
+        });
+      },
     );
   }
 
@@ -215,13 +219,13 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
         Flexible(
           child: _buildLocationBar(),
         ),
-        IconButton(
-          icon: const Icon(Icons.volume_down_alt),
-          onPressed: () {
-            Global.eventBus.fire(GlobalEvent(widget.id, GlobalEventType.muted));
-            showToast('静音模式切换');
-          },
-        ),
+        // IconButton(
+        //   icon: const Icon(Icons.volume_down_alt),
+        //   onPressed: () {
+        //     Global.eventBus.fire(GlobalEvent(widget.id, GlobalEventType.muted));
+        //     showToast('静音模式切换');
+        //   },
+        // ),
         IconButton(
           icon: const Icon(Icons.fullscreen),
           onPressed: () {
