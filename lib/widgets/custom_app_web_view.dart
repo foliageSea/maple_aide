@@ -188,9 +188,11 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
       },
       onConsoleMessage: (controller, consoleMessage) {},
       onLoadStop: (controller, url) async {
-        Future.delayed(const Duration(seconds: 1), () {
-          Global.eventBus.fire(GlobalEvent(widget.id, GlobalEventType.muted));
-        });
+        if (url != null && url.host.contains("bilibili.com")) {
+          Future.delayed(const Duration(seconds: 1), () {
+            Global.eventBus.fire(GlobalEvent(widget.id, GlobalEventType.muted));
+          });
+        }
       },
     );
   }
