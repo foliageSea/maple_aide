@@ -37,16 +37,6 @@ class HotkeyHelper {
       ): (hotKey) {
         log('Alt+2');
         WindowManagerHelper().minMode();
-        // showToast('窗口模式切换');
-      },
-      HotKey(
-        KeyCode.digit3,
-        modifiers: [KeyModifier.alt],
-        scope: HotKeyScope.system,
-      ): (hotKey) {
-        log('Alt+3');
-        Global.eventBus.fire(GlobalEvent(id.value, GlobalEventType.muted));
-        showToast('静音模式切换');
       },
       HotKey(
         KeyCode.arrowLeft,
