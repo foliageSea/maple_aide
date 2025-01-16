@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
+import 'package:maple_aide/constants/color_type.dart';
 import 'package:maple_aide/helpers/hotkey_helper.dart';
+import 'package:maple_aide/helpers/preferences_helper.dart';
 import 'package:maple_aide/pages/home/home_page.dart';
-import 'package:window_manager/window_manager.dart';
+// import 'package:window_manager/window_manager.dart';
 
 import 'global.dart';
 
@@ -39,25 +41,46 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final virtualWindowFrameBuilder = VirtualWindowFrameInit();
-    return GetMaterialApp(
-      title: Global.appName,
-      debugShowCheckedModeBanner: false,
-      navigatorObservers: [FlutterSmartDialog.observer],
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurpleAccent),
-        useMaterial3: true,
+    // final virtualWindowFrameBuilder = VirtualWindowFrameInit();
+
+    var customColor = PreferencesHelper().customColor.value;
+    var darkMode = PreferencesHelper().darkMode;
+    Color defaultColor = colorThemeTypes[customColor]['color'];
+    var lightColorScheme = ColorScheme.fromSeed(
+      seedColor: defaultColor,
+      brightness: Brightness.light,
+    );
+    var darkColorScheme = ColorScheme.fromSeed(
+      seedColor: defaultColor,
+      brightness: Brightness.dark,
+    );
+    return Obx(
+      () => GetMaterialApp(
+        title: Global.appName,
+        debugShowCheckedModeBanner: false,
+        navigatorObservers: [FlutterSmartDialog.observer],
+        themeMode: darkMode.value ? ThemeMode.dark : ThemeMode.light,
+        theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: lightColorScheme,
+          fontFamily: 'MiSans',
+        ),
+        darkTheme: ThemeData(
+          useMaterial3: true,
+          colorScheme: darkColorScheme,
+          fontFamily: 'MiSans',
+        ),
+        builder: (context, child) {
+          var c = FlutterSmartDialog.init(
+            builder: (context, child) {
+              return child!;
+            },
+          )(context, child);
+          // c = virtualWindowFrameBuilder(context, c);
+          return c;
+        },
+        home: const HomePage(),
       ),
-      builder: (context, child) {
-        var c = FlutterSmartDialog.init(
-          builder: (context, child) {
-            return child!;
-          },
-        )(context, child);
-        // c = virtualWindowFrameBuilder(context, c);
-        return c;
-      },
-      home: const HomePage(),
     );
   }
 }

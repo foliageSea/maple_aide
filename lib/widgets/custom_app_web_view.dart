@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -235,6 +233,10 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
                 .fire(GlobalEvent(widget.id, GlobalEventType.fullScreen));
             showToast('全屏模式切换');
           },
+        ),
+        TextButton(
+          child: Text('${widget.id}'),
+          onPressed: () {},
         ),
         const SizedBox(
           height: 15,
