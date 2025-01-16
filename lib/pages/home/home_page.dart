@@ -25,8 +25,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late HomeController controller;
 
-  PageController pageController = PageController();
-
   @override
   void initState() {
     super.initState();
@@ -37,12 +35,14 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(context),
-      body: Obx(() => _buildTabs()),
+      body: Obx(() => _buildTabsView()),
       drawer: Obx(() => _buildDrawer()),
     );
   }
 
   PreferredSize _buildAppBar(BuildContext context) {
+    var id = controller.hotkeyHelper.id;
+
     return PreferredSize(
       preferredSize: const Size.fromHeight(kWindowCaptionHeight),
       child: GestureDetector(
@@ -58,7 +58,7 @@ class _HomePageState extends State<HomePage> {
         },
         child: CustomWindowCaption(
           brightness: Theme.of(context).brightness,
-          title: Text('Maple Aide v${Global.version}'),
+          title: Obx(() => Text('Maple Aide v${Global.version} (${id.value})')),
         ),
       ),
     );
@@ -71,6 +71,28 @@ class _HomePageState extends State<HomePage> {
   }
 
   Drawer _buildDrawer() {
+    var list = _getTabs();
+
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/IMG_5732.PNG'),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: _buildDrawerHeaderActionsBar(),
+          ),
+          ...list,
+        ],
+      ),
+    );
+  }
+
+  List<ListTile> _getTabs() {
     var tabs = controller.tabs;
 
     var i = 0;
@@ -93,7 +115,7 @@ class _HomePageState extends State<HomePage> {
           style: const TextStyle(color: Colors.grey),
         ),
         onTap: () {
-          pageController.animateToPage(page,
+          controller.pageController.animateToPage(page,
               duration: AnimationConstants.duration,
               curve: AnimationConstants.curve);
         },
@@ -101,69 +123,56 @@ class _HomePageState extends State<HomePage> {
       i++;
       return child;
     }).toList();
+    return list;
+  }
 
+  Widget _buildDrawerHeaderActionsBar() {
     var darkMode = controller.preferencesHelper.darkMode;
 
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/IMG_5732.PNG'),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Stack(
-              alignment: AlignmentDirectional.bottomEnd,
-              children: [
-                Container(
-                  width: 100,
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.35),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      IconButton(
-                        onPressed: () async {
-                          await controller.preferencesHelper.toggleDarkMode();
-                        },
-                        icon: Icon(
-                          darkMode.value ? Icons.dark_mode : Icons.light_mode,
-                          color: Colors.white,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () async {
-                          await showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return const ColorSelectDialog();
-                            },
-                          );
-                        },
-                        icon: const Icon(
-                          Icons.color_lens,
-                          color: Colors.white,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
+    return Stack(
+      alignment: AlignmentDirectional.bottomEnd,
+      children: [
+        Container(
+          width: 100,
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.35),
+            borderRadius: BorderRadius.circular(8.0),
           ),
-          ...list,
-        ],
-      ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              IconButton(
+                onPressed: () async {
+                  await controller.preferencesHelper.toggleDarkMode();
+                },
+                icon: Icon(
+                  darkMode.value ? Icons.dark_mode : Icons.light_mode,
+                  color: Colors.white,
+                ),
+              ),
+              IconButton(
+                onPressed: () async {
+                  await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const ColorSelectDialog();
+                    },
+                  );
+                },
+                icon: const Icon(
+                  Icons.color_lens,
+                  color: Colors.white,
+                ),
+              )
+            ],
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildTabs() {
+  Widget _buildTabsView() {
     var tabs = controller.tabs;
 
     if (tabs.isEmpty) {
@@ -171,7 +180,6 @@ class _HomePageState extends State<HomePage> {
         child: IconButton(
           onPressed: () async {
             await controller.addTab();
-            controller.resetIndex();
           },
           icon: const Icon(Icons.add),
         ),
@@ -181,35 +189,31 @@ class _HomePageState extends State<HomePage> {
     return Column(
       children: [
         Flexible(
-          child: PageView.builder(
-            controller: pageController,
-            onPageChanged: (i) {
-              var index = controller.index;
-              index.value = i;
-              index.refresh();
-
-              var tab = tabs[i];
-              HotkeyHelper().updateId(tab.id);
-            },
-            itemCount: tabs.length,
-            itemBuilder: (BuildContext context, int index) {
-              var tab = tabs[index];
-              return KeepAlivePage(
-                child: CustomAppWebView(
-                  key: tab.key,
-                  id: tab.id,
-                  url: tab.url,
-                  actions: _buildExtActions(context, tab),
-                  onUpdateVisitedHistory: (id, url, title) async {
-                    await controller.handleUpdateUrl(id, url, title);
-                    tab.url = url;
-                    tab.title = title;
-                    tabs.refresh();
-                  },
-                ),
-              );
-            },
-          ),
+          child: Obx(() => PageView.builder(
+                controller: controller.pageController,
+                onPageChanged: (i) {
+                  var tab = tabs[i];
+                  HotkeyHelper().updateId(tab.id);
+                },
+                itemCount: tabs.length,
+                itemBuilder: (BuildContext context, int index) {
+                  var tab = tabs[index];
+                  return KeepAlivePage(
+                    child: CustomAppWebView(
+                      key: tab.key,
+                      id: tab.id,
+                      url: tab.url,
+                      actions: _buildExtActions(context, tab),
+                      onUpdateVisitedHistory: (id, url, title) async {
+                        await controller.handleUpdateUrl(id, url, title);
+                        tab.url = url;
+                        tab.title = title;
+                        tabs.refresh();
+                      },
+                    ),
+                  );
+                },
+              )),
         ),
       ],
     );
@@ -223,11 +227,11 @@ class _HomePageState extends State<HomePage> {
         },
         icon: const Icon(Icons.tab),
       ),
-      _buildMenu(tab.id),
+      _buildPopupMenu(tab.id),
     ];
   }
 
-  Widget _buildMenu(int id) {
+  Widget _buildPopupMenu(int id) {
     return PopupMenuButton<String>(
       itemBuilder: (BuildContext context) {
         return [
@@ -236,7 +240,7 @@ class _HomePageState extends State<HomePage> {
               await controller.addTab();
 
               var index = controller.tabs.length - 1;
-              pageController.animateToPage(
+              controller.pageController.animateToPage(
                 index,
                 duration: AnimationConstants.duration,
                 curve: AnimationConstants.curve,
@@ -253,7 +257,7 @@ class _HomePageState extends State<HomePage> {
                 return;
               }
 
-              controller.removeTab(id);
+              await controller.removeTab(id);
             },
             child: const Text('关闭标签'),
           ),

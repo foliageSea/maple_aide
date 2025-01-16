@@ -234,6 +234,10 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
             showToast('全屏模式切换');
           },
         ),
+        TextButton(
+          child: Text('${widget.id}'),
+          onPressed: () {},
+        ),
         const SizedBox(
           height: 15,
           child: VerticalDivider(

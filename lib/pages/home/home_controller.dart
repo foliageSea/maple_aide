@@ -8,14 +8,10 @@ import 'package:maple_aide/widgets/custom_app_web_view.dart';
 
 class HomeController extends GetxController {
   var tabs = <Tab>[].obs;
-  var index = 0.obs;
   final HotkeyHelper hotkeyHelper = HotkeyHelper();
   final PreferencesHelper preferencesHelper = PreferencesHelper();
 
-  void resetIndex() {
-    index.value = 0;
-    index.refresh();
-  }
+  PageController pageController = PageController();
 
   Future loadData() async {
     try {
@@ -64,7 +60,8 @@ class HomeController extends GetxController {
   }
 
   GlobalKey<CustomAppWebViewState> getCustomAppWebViewState() {
-    return tabs[index.value].key;
+    var i = pageController.page?.round() ?? 0;
+    return tabs[i].key;
   }
 
   Future removeTab(int id) async {
