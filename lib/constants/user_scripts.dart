@@ -13,7 +13,8 @@ var userScripts = UnmodifiableListView<UserScript>(
           "window.next = () => document.querySelector('.bpx-player-ctrl-next')?.click();"
           "window.forward = () => document.querySelector('video').currentTime += 5;"
           "window.back = () => document.querySelector('video').currentTime -= 5;"
-          "window.muted = () => document.querySelector('video').muted = !document.querySelector('video').muted;",
+          "window.muted = () => document.querySelector('video').muted = !document.querySelector('video').muted;"
+          "window.setMuteToggle = () => document.querySelector('video')?.addEventListener('canplay', () => document.querySelector('video').muted ^= 1);",
       injectionTime: UserScriptInjectionTime.AT_DOCUMENT_END,
     ),
   ],
@@ -27,4 +28,5 @@ Map<GlobalEventType, String> userScriptsHandlers = {
   GlobalEventType.forward: 'window.forward()',
   GlobalEventType.back: 'window.back()',
   GlobalEventType.muted: 'window.muted()',
+  GlobalEventType.setMuteToggle: 'window.setMuteToggle()',
 };

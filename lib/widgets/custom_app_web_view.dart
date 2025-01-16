@@ -187,9 +187,11 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
       onConsoleMessage: (controller, consoleMessage) {},
       onLoadStop: (controller, url) async {
         if (url != null && url.host.contains("bilibili.com")) {
-          Future.delayed(const Duration(seconds: 1), () {
-            Global.eventBus.fire(GlobalEvent(widget.id, GlobalEventType.muted));
-          });
+          // Future.delayed(const Duration(seconds: 1), () {
+          //   Global.eventBus.fire(GlobalEvent(widget.id, GlobalEventType.muted));
+          // });
+          Global.eventBus
+              .fire(GlobalEvent(widget.id, GlobalEventType.setMuteToggle));
         }
       },
     );
@@ -234,10 +236,6 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
             showToast('全屏模式切换');
           },
         ),
-        TextButton(
-          child: Text('${widget.id}'),
-          onPressed: () {},
-        ),
         const SizedBox(
           height: 15,
           child: VerticalDivider(
@@ -250,12 +248,30 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
     );
   }
 
+  Widget _buildTag() {
+    return Container(
+      width: 25,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        '${widget.id}',
+        style: const TextStyle(
+          color: Colors.white,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
   Padding _buildLocationBar() {
     return Padding(
       padding: const EdgeInsets.only(left: 8.0, right: 8),
       child: TextField(
         controller: urlController,
         keyboardType: TextInputType.text,
+        decoration: InputDecoration(suffix: _buildTag()),
         onSubmitted: (value) {
           var url = WebUri(value);
           if (url.scheme.isEmpty) {

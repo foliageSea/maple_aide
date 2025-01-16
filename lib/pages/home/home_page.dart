@@ -99,6 +99,7 @@ class _HomePageState extends State<HomePage> {
     var list = tabs.map((e) {
       var page = i;
       var child = ListTile(
+        leading: _buildTag(e.id),
         title: Text(
           e.title ?? '-',
           maxLines: 1,
@@ -285,6 +286,23 @@ class _HomePageState extends State<HomePage> {
         ];
       },
       icon: const Icon(Icons.more_vert),
+    );
+  }
+
+  Widget _buildTag(int id) {
+    return Container(
+      width: 25,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        '$id',
+        style: const TextStyle(
+          color: Colors.white,
+        ),
+        textAlign: TextAlign.center,
+      ),
     );
   }
 }
