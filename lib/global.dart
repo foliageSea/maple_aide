@@ -55,4 +55,5 @@ enum GlobalEventType {
   forward,
   back,
   muted,
+  setMuteToggle,
 }
