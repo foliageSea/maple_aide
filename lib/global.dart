@@ -23,7 +23,9 @@ class Global {
 
     await Db().init();
 
-    await PreferencesHelper().init();
+    var preferencesHelper = PreferencesHelper();
+    await preferencesHelper.init();
+    await preferencesHelper.loadConfig();
 
     await HotkeyHelper().unregisterAll();
 

@@ -3,12 +3,14 @@ import 'package:get/get.dart';
 import 'package:maple_aide/db/dao/tab_dao.dart';
 import 'package:maple_aide/db/entity/tab_entity.dart';
 import 'package:maple_aide/helpers/hotkey_helper.dart';
+import 'package:maple_aide/helpers/preferences_helper.dart';
 import 'package:maple_aide/widgets/custom_app_web_view.dart';
 
 class HomeController extends GetxController {
   var tabs = <Tab>[].obs;
   var index = 0.obs;
   final HotkeyHelper hotkeyHelper = HotkeyHelper();
+  final PreferencesHelper preferencesHelper = PreferencesHelper();
 
   void resetIndex() {
     index.value = 0;

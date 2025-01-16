@@ -9,6 +9,7 @@ import 'package:maple_aide/global.dart';
 import 'package:maple_aide/helpers/hotkey_helper.dart';
 import 'package:maple_aide/pages/home/home_controller.dart';
 import 'package:maple_aide/utils/utils.dart';
+import 'package:maple_aide/widgets/color_select_dialog.dart';
 import 'package:maple_aide/widgets/custom_app_web_view.dart';
 import 'package:maple_aide/widgets/custom_window_caption.dart';
 import 'package:maple_aide/widgets/keep_alive_page.dart';
@@ -65,7 +66,7 @@ class _HomePageState extends State<HomePage> {
 
   Color? _getSelectColor(int id) {
     return HotkeyHelper().id.value == id
-        ? Theme.of(context).primaryColor
+        ? Theme.of(context).colorScheme.primary
         : null;
   }
 
@@ -101,6 +102,8 @@ class _HomePageState extends State<HomePage> {
       return child;
     }).toList();
 
+    var darkMode = controller.preferencesHelper.darkMode;
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -112,7 +115,47 @@ class _HomePageState extends State<HomePage> {
                 fit: BoxFit.cover,
               ),
             ),
-            child: Container(),
+            child: Stack(
+              alignment: AlignmentDirectional.bottomEnd,
+              children: [
+                Container(
+                  width: 100,
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.35),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        onPressed: () async {
+                          await controller.preferencesHelper.toggleDarkMode();
+                        },
+                        icon: Icon(
+                          darkMode.value ? Icons.dark_mode : Icons.light_mode,
+                          color: Colors.white,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () async {
+                          await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return const ColorSelectDialog();
+                            },
+                          );
+                        },
+                        icon: const Icon(
+                          Icons.color_lens,
+                          color: Colors.white,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
           ...list,
         ],
