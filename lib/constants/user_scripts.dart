@@ -14,7 +14,7 @@ var userScripts = UnmodifiableListView<UserScript>(
           "window.forward = () => document.querySelector('video').currentTime += 5;"
           "window.back = () => document.querySelector('video').currentTime -= 5;"
           "window.muted = () => document.querySelector('video').muted = !document.querySelector('video').muted;"
-          "window.setMuteToggle = () => document.querySelector('video')?.addEventListener('canplay', () => document.querySelector('video').muted ^= 1);",
+          "window.setMuteToggle = () => document.querySelector('video')?.addEventListener('canplay', () => document.querySelector('video').muted = false);",
       injectionTime: UserScriptInjectionTime.AT_DOCUMENT_END,
     ),
   ],
