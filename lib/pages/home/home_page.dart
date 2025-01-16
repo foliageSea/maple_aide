@@ -11,6 +11,7 @@ import 'package:maple_aide/pages/home/home_controller.dart';
 import 'package:maple_aide/utils/utils.dart';
 import 'package:maple_aide/widgets/color_select_dialog.dart';
 import 'package:maple_aide/widgets/custom_app_web_view.dart';
+import 'package:maple_aide/widgets/custom_tag.dart';
 import 'package:maple_aide/widgets/custom_window_caption.dart';
 import 'package:maple_aide/widgets/keep_alive_page.dart';
 import 'package:window_manager/window_manager.dart';
@@ -58,7 +59,17 @@ class _HomePageState extends State<HomePage> {
         },
         child: CustomWindowCaption(
           brightness: Theme.of(context).brightness,
-          title: Obx(() => Text('Maple Aide v${Global.version} (${id.value})')),
+          title: Obx(
+            () => Row(
+              children: [
+                CustomTag(id.value),
+                const SizedBox(
+                  width: 8,
+                ),
+                Text('Maple Aide v${Global.version}'),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -99,7 +110,7 @@ class _HomePageState extends State<HomePage> {
     var list = tabs.map((e) {
       var page = i;
       var child = ListTile(
-        leading: _buildTag(e.id),
+        leading: CustomTag(e.id),
         title: Text(
           e.title ?? '-',
           maxLines: 1,
@@ -286,23 +297,6 @@ class _HomePageState extends State<HomePage> {
         ];
       },
       icon: const Icon(Icons.more_vert),
-    );
-  }
-
-  Widget _buildTag(int id) {
-    return Container(
-      width: 25,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        '$id',
-        style: const TextStyle(
-          color: Colors.white,
-        ),
-        textAlign: TextAlign.center,
-      ),
     );
   }
 }

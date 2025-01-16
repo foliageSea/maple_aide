@@ -8,6 +8,7 @@ import 'package:maple_aide/helpers/hotkey_helper.dart';
 import 'package:maple_aide/helpers/preferences_helper.dart';
 import 'package:maple_aide/helpers/window_manager_helper.dart';
 import 'package:maple_aide/utils/utils.dart';
+import 'package:maple_aide/widgets/custom_tag.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:html/parser.dart' show parse;
 
@@ -248,30 +249,13 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
     );
   }
 
-  Widget _buildTag() {
-    return Container(
-      width: 25,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        '${widget.id}',
-        style: const TextStyle(
-          color: Colors.white,
-        ),
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-
   Padding _buildLocationBar() {
     return Padding(
       padding: const EdgeInsets.only(left: 8.0, right: 8),
       child: TextField(
         controller: urlController,
         keyboardType: TextInputType.text,
-        decoration: InputDecoration(suffix: _buildTag()),
+        decoration: InputDecoration(suffix: CustomTag(widget.id)),
         onSubmitted: (value) {
           var url = WebUri(value);
           if (url.scheme.isEmpty) {

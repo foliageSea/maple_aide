@@ -80,6 +80,8 @@ class HomeController extends GetxController {
 
         var item = tabs[index];
         HotkeyHelper().updateId(item.id);
+      } else {
+        HotkeyHelper().updateId(0);
       }
 
       tabs.refresh();
