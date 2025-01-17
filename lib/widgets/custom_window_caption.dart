@@ -77,25 +77,25 @@ class _CustomWindowCaptionState extends State<CustomWindowCaption>
               }
             },
           ),
-          // FutureBuilder<bool>(
-          //   future: windowManager.isMaximized(),
-          //   builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-          //     if (snapshot.data == true) {
-          //       return WindowCaptionButton.unmaximize(
-          //         brightness: widget.brightness,
-          //         onPressed: () {
-          //           windowManager.unmaximize();
-          //         },
-          //       );
-          //     }
-          //     return WindowCaptionButton.maximize(
-          //       brightness: widget.brightness,
-          //       onPressed: () {
-          //         windowManager.maximize();
-          //       },
-          //     );
-          //   },
-          // ),
+          FutureBuilder<bool>(
+            future: windowManager.isMaximized(),
+            builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+              if (snapshot.data == true) {
+                return WindowCaptionButton.unmaximize(
+                  brightness: widget.brightness,
+                  onPressed: () {
+                    windowManager.unmaximize();
+                  },
+                );
+              }
+              return WindowCaptionButton.maximize(
+                brightness: widget.brightness,
+                onPressed: () {
+                  windowManager.maximize();
+                },
+              );
+            },
+          ),
           WindowCaptionButton.close(
             brightness: widget.brightness,
             onPressed: () {
@@ -134,12 +134,12 @@ class CustomDragToMoveArea extends StatelessWidget {
         windowManager.startDragging();
       },
       onDoubleTap: () async {
-        // bool isMaximized = await windowManager.isMaximized();
-        // if (!isMaximized) {
-        //   windowManager.maximize();
-        // } else {
-        //   windowManager.unmaximize();
-        // }
+        bool isMaximized = await windowManager.isMaximized();
+        if (!isMaximized) {
+          windowManager.maximize();
+        } else {
+          windowManager.unmaximize();
+        }
       },
       child: child,
     );
