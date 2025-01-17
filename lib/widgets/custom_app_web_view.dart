@@ -40,6 +40,7 @@ class CustomAppWebViewState extends State<CustomAppWebView> {
     isInspectable: kDebugMode,
     mediaPlaybackRequiresUserGesture: false,
     allowsInlineMediaPlayback: true,
+    decelerationRate: ScrollViewDecelerationRate.NORMAL,
   );
 
   String url = "";

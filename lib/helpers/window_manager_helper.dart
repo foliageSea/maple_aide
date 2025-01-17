@@ -14,7 +14,7 @@ class WindowManagerHelper {
   }
 
   Map<WindowManagerSize, Size> sizeMap = {
-    WindowManagerSize.normal: const Size(1024, 768),
+    WindowManagerSize.normal: const Size(1280, 720),
     WindowManagerSize.min: const Size(512, 384),
   };
 
@@ -31,7 +31,7 @@ class WindowManagerHelper {
 
     windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.setPreventClose(true);
-      await windowManager.setMaximizable(false);
+      // await windowManager.setMaximizable(false);
       await windowManager.show();
       await windowManager.focus();
       windowManager.addListener(_WindowListener());
@@ -46,12 +46,16 @@ class WindowManagerHelper {
     var size = await windowManager.getSize();
     if (size == sizeMap[WindowManagerSize.normal]) {
       await windowManager.setSize(sizeMap[WindowManagerSize.min]!);
-      await windowManager.setAlignment(Alignment.bottomLeft);
+      await windowManager.setAlignment(Alignment.bottomRight);
       await windowManager.setAlwaysOnTop(true);
+      // await windowManager.setOpacity(0.8);
+      // await windowManager.setIgnoreMouseEvents(true);
     } else {
       await windowManager.setSize(sizeMap[WindowManagerSize.normal]!);
       await windowManager.setAlignment(Alignment.center);
       await windowManager.setAlwaysOnTop(false);
+      // await windowManager.setOpacity(1);
+      // await windowManager.setIgnoreMouseEvents(false);
     }
   }
 
