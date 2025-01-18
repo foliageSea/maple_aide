@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:maple_aide/constants/position_constant.dart';
 import 'package:maple_aide/global.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
+
+import 'preferences_helper.dart';
 
 class WindowManagerHelper {
   static WindowManagerHelper? _helper;
@@ -46,7 +49,11 @@ class WindowManagerHelper {
     var size = await windowManager.getSize();
     if (size == sizeMap[WindowManagerSize.normal]) {
       await windowManager.setSize(sizeMap[WindowManagerSize.min]!);
-      await windowManager.setAlignment(Alignment.bottomRight);
+
+      var helper = PreferencesHelper();
+
+      await windowManager
+          .setAlignment(positionAlignmentConstant[helper.position.value]!);
       await windowManager.setAlwaysOnTop(true);
       // await windowManager.setOpacity(0.8);
       // await windowManager.setIgnoreMouseEvents(true);
