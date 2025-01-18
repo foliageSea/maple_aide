@@ -1,5 +1,7 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:maple_aide/constants/position_constant.dart';
 import 'package:maple_aide/db/dao/tab_dao.dart';
 import 'package:maple_aide/db/entity/tab_entity.dart';
 import 'package:maple_aide/helpers/hotkey_helper.dart';
@@ -86,6 +88,30 @@ class HomeController extends GetxController {
 
       tabs.refresh();
     }
+  }
+
+  Future handleSettingPosition(BuildContext context) async {
+    var actions = positionLabelConstant.keys
+        .map(
+          (e) => AlertDialogAction<int>(
+              key: e.index, label: positionLabelConstant[e]!),
+        )
+        .toList();
+
+    var helper = PreferencesHelper();
+
+    var result = await showConfirmationDialog<int>(
+      context: context,
+      title: '位置',
+      actions: actions,
+      initialSelectedActionKey: helper.position.value,
+    );
+
+    if (result == null) {
+      return;
+    }
+
+    helper.setPosition(result);
   }
 
   @override

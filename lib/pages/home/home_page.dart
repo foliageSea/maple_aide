@@ -294,6 +294,12 @@ class _HomePageState extends State<HomePage> {
             },
             child: const Text('帮助'),
           ),
+          PopupMenuItem(
+            onTap: () async {
+              await controller.handleSettingPosition(context);
+            },
+            child: const Text('位置'),
+          ),
         ];
       },
       icon: const Icon(Icons.more_vert),

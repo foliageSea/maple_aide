@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -64,11 +65,19 @@ class _MyAppState extends State<MyApp> {
           useMaterial3: true,
           colorScheme: lightColorScheme,
           fontFamily: 'MiSans',
+          platform: TargetPlatform.iOS,
+          cupertinoOverrideTheme: const CupertinoThemeData(
+            textTheme: CupertinoTextThemeData(), // This is required
+          ),
         ),
         darkTheme: ThemeData(
           useMaterial3: true,
           colorScheme: darkColorScheme,
           fontFamily: 'MiSans',
+          platform: TargetPlatform.iOS,
+          cupertinoOverrideTheme: const CupertinoThemeData(
+            textTheme: CupertinoTextThemeData(), // This is required
+          ),
         ),
         builder: (context, child) {
           var c = FlutterSmartDialog.init(
@@ -79,6 +88,12 @@ class _MyAppState extends State<MyApp> {
           // c = virtualWindowFrameBuilder(context, c);
           return c;
         },
+        locale: const Locale('zh', 'CN'),
+        localizationsDelegates: const [
+          DefaultMaterialLocalizations.delegate,
+          DefaultWidgetsLocalizations.delegate,
+          DefaultCupertinoLocalizations.delegate, // This is required
+        ],
         home: const HomePage(),
       ),
     );
