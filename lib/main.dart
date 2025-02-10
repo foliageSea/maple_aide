@@ -6,6 +6,7 @@ import 'package:maple_aide/constants/color_type.dart';
 import 'package:maple_aide/helpers/hotkey_helper.dart';
 import 'package:maple_aide/helpers/preferences_helper.dart';
 import 'package:maple_aide/pages/home/home_page.dart';
+import 'package:window_manager/window_manager.dart';
 // import 'package:window_manager/window_manager.dart';
 
 import 'global.dart';
@@ -27,16 +28,26 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WindowListener {
   @override
   void initState() {
     super.initState();
     HotkeyHelper().register();
+    windowManager.addListener(this);
+  }
+
+  @override
+  Future<void> onWindowClose() async {
+    bool isPreventClose = await windowManager.isPreventClose();
+    if (isPreventClose && mounted) {
+      await windowManager.hide();
+    }
   }
 
   @override
   void dispose() {
     super.dispose();
+    windowManager.removeListener(this);
     HotkeyHelper().unregisterAll();
   }
 
