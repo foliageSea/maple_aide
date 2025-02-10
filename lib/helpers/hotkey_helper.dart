@@ -36,7 +36,7 @@ class HotkeyHelper {
         scope: HotKeyScope.system,
       ): (hotKey) {
         log('Alt+2');
-        WindowManagerHelper().minMode();
+        WindowManagerHelper().handleMinModeWin();
       },
       HotKey(
         KeyCode.arrowLeft,
@@ -76,12 +76,14 @@ class HotkeyHelper {
       },
     };
 
-    for (var e in hotkeys.keys) {
-      await hotKeySystem.register(
-        e,
-        keyDownHandler: hotkeys[e],
-      );
-    }
+    try {
+      for (var e in hotkeys.keys) {
+        await hotKeySystem.register(
+          e,
+          keyDownHandler: hotkeys[e],
+        );
+      }
+    } catch (_) {}
   }
 
   Future unregisterAll() async {

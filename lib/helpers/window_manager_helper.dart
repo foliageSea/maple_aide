@@ -39,8 +39,8 @@ class WindowManagerHelper {
     });
   }
 
-  Future minMode() async {
-    if (!await restore()) {
+  Future handleMinModeWin() async {
+    if (!await restoreWin()) {
       return;
     }
 
@@ -64,7 +64,7 @@ class WindowManagerHelper {
     }
   }
 
-  Future restore() async {
+  Future restoreWin() async {
     var maximized = await windowManager.isMaximized();
 
     if (maximized) {
