@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -38,6 +41,10 @@ class _MyAppState extends State<MyApp> with WindowListener {
 
   @override
   Future<void> onWindowClose() async {
+    if (kDebugMode) {
+      exit(0);
+    }
+
     bool isPreventClose = await windowManager.isPreventClose();
     if (isPreventClose && mounted) {
       await windowManager.hide();
@@ -99,12 +106,10 @@ class _MyAppState extends State<MyApp> with WindowListener {
           // c = virtualWindowFrameBuilder(context, c);
           return c;
         },
-        locale: const Locale('zh', 'CN'),
-        localizationsDelegates: const [
-          DefaultMaterialLocalizations.delegate,
-          DefaultWidgetsLocalizations.delegate,
-          DefaultCupertinoLocalizations.delegate, // This is required
-        ],
+        translations: CustomTranslations(), // 你的翻译
+        locale: CustomTranslations.local,
+        fallbackLocale: CustomTranslations.local,
+        localizationsDelegates: CustomTranslations.localizationsDelegates,
         home: const HomePage(),
       ),
     );
@@ -139,4 +144,21 @@ class ErrorApp extends StatelessWidget {
       ),
     );
   }
+}
+
+class CustomTranslations extends Translations {
+  @override
+  Map<String, Map<String, String>> get keys {
+    return {
+      'zh_CN': {},
+    };
+  }
+
+  static const local = Locale('zh', 'CN');
+
+  static const localizationsDelegates = [
+    DefaultMaterialLocalizations.delegate,
+    DefaultWidgetsLocalizations.delegate,
+    DefaultCupertinoLocalizations.delegate, // This is required
+  ];
 }
