@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -6,6 +9,7 @@ import 'package:maple_aide/constants/color_type.dart';
 import 'package:maple_aide/helpers/hotkey_helper.dart';
 import 'package:maple_aide/helpers/preferences_helper.dart';
 import 'package:maple_aide/pages/home/home_page.dart';
+import 'package:window_manager/window_manager.dart';
 // import 'package:window_manager/window_manager.dart';
 
 import 'global.dart';
@@ -27,16 +31,26 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WindowListener {
   @override
   void initState() {
     super.initState();
     HotkeyHelper().register();
+    windowManager.addListener(this);
+  }
+
+  @override
+  Future<void> onWindowClose() async {
+    bool isPreventClose = await windowManager.isPreventClose();
+    if (isPreventClose && mounted) {
+      await windowManager.hide();
+    }
   }
 
   @override
   void dispose() {
     super.dispose();
+    windowManager.removeListener(this);
     HotkeyHelper().unregisterAll();
   }
 
@@ -88,12 +102,10 @@ class _MyAppState extends State<MyApp> {
           // c = virtualWindowFrameBuilder(context, c);
           return c;
         },
-        locale: const Locale('zh', 'CN'),
-        localizationsDelegates: const [
-          DefaultMaterialLocalizations.delegate,
-          DefaultWidgetsLocalizations.delegate,
-          DefaultCupertinoLocalizations.delegate, // This is required
-        ],
+        translations: CustomTranslations(), // 你的翻译
+        locale: CustomTranslations.local,
+        fallbackLocale: CustomTranslations.local,
+        localizationsDelegates: CustomTranslations.localizationsDelegates,
         home: const HomePage(),
       ),
     );
@@ -128,4 +140,21 @@ class ErrorApp extends StatelessWidget {
       ),
     );
   }
+}
+
+class CustomTranslations extends Translations {
+  @override
+  Map<String, Map<String, String>> get keys {
+    return {
+      'zh_CN': {},
+    };
+  }
+
+  static const local = Locale('zh', 'CN');
+
+  static const localizationsDelegates = [
+    DefaultMaterialLocalizations.delegate,
+    DefaultWidgetsLocalizations.delegate,
+    DefaultCupertinoLocalizations.delegate, // This is required
+  ];
 }

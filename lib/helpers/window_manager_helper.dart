@@ -26,7 +26,7 @@ class WindowManagerHelper {
     WindowOptions windowOptions = WindowOptions(
       size: sizeMap[WindowManagerSize.normal],
       center: true,
-      backgroundColor: Colors.transparent,
+      // backgroundColor: Colors.transparent,
       skipTaskbar: false,
       titleBarStyle: TitleBarStyle.hidden,
       alwaysOnTop: false,
@@ -34,15 +34,13 @@ class WindowManagerHelper {
 
     windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.setPreventClose(true);
-      // await windowManager.setMaximizable(false);
       await windowManager.show();
       await windowManager.focus();
-      windowManager.addListener(_WindowListener());
     });
   }
 
-  Future minMode() async {
-    if (!await restore()) {
+  Future handleMinModeWin() async {
+    if (!await restoreWin()) {
       return;
     }
 
@@ -66,7 +64,7 @@ class WindowManagerHelper {
     }
   }
 
-  Future restore() async {
+  Future restoreWin() async {
     var maximized = await windowManager.isMaximized();
 
     if (maximized) {
@@ -77,7 +75,7 @@ class WindowManagerHelper {
     var minimized = await windowManager.isMinimized();
     var visible = await isVisible();
     if (minimized || !visible) {
-      await windowManager.show();
+      await windowManager.show(inactive: true);
       return false;
     }
 
@@ -102,12 +100,4 @@ class WindowManagerHelper {
 enum WindowManagerSize {
   normal,
   min,
-}
-
-class _WindowListener extends WindowListener {
-  @override
-  Future<void> onWindowClose() async {
-    windowManager.hide();
-    // windowManager.minimize();
-  }
 }
