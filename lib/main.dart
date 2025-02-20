@@ -41,10 +41,6 @@ class _MyAppState extends State<MyApp> with WindowListener {
 
   @override
   Future<void> onWindowClose() async {
-    if (kDebugMode) {
-      exit(0);
-    }
-
     bool isPreventClose = await windowManager.isPreventClose();
     if (isPreventClose && mounted) {
       await windowManager.hide();
