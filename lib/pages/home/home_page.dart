@@ -13,7 +13,6 @@ import 'package:maple_aide/widgets/color_select_dialog.dart';
 import 'package:maple_aide/widgets/custom_app_web_view.dart';
 import 'package:maple_aide/widgets/custom_tag.dart';
 import 'package:maple_aide/widgets/custom_window_caption.dart';
-import 'package:maple_aide/widgets/keep_alive_page.dart';
 import 'package:window_manager/window_manager.dart';
 
 class HomePage extends StatefulWidget {
@@ -210,19 +209,17 @@ class _HomePageState extends State<HomePage> {
                 itemCount: tabs.length,
                 itemBuilder: (BuildContext context, int index) {
                   var tab = tabs[index];
-                  return KeepAlivePage(
-                    child: CustomAppWebView(
-                      key: tab.key,
-                      id: tab.id,
-                      url: tab.url,
-                      actions: _buildExtActions(context, tab),
-                      onUpdateVisitedHistory: (id, url, title) async {
-                        await controller.handleUpdateUrl(id, url, title);
-                        tab.url = url;
-                        tab.title = title;
-                        tabs.refresh();
-                      },
-                    ),
+                  return CustomAppWebView(
+                    key: tab.key,
+                    id: tab.id,
+                    url: tab.url,
+                    actions: _buildExtActions(context, tab),
+                    onUpdateVisitedHistory: (id, url, title) async {
+                      await controller.handleUpdateUrl(id, url, title);
+                      tab.url = url;
+                      tab.title = title;
+                      tabs.refresh();
+                    },
                   );
                 },
               )),
